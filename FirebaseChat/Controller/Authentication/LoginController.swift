@@ -29,34 +29,33 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    let emailContainerView: UIView = {
-        let view = UIView()
+    let emailContainerView = TextFieldContainerView(
+        image: UIImage(systemName: "envelope"),
+        placeholder: "Email"
+    )
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemCyan
-        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        return view
-    }()
-
-    let passwordContainerView: UIView = {
-        let view = UIView()
-
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemYellow
-        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        return view
-    }()
+    let passwordContainerView = TextFieldContainerView(
+        image: UIImage(systemName: "lock"),
+        placeholder: "Password",
+        isSecure: true
+    )
 
     lazy var loginButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
+        var config = UIButton.Configuration.filled()
 
+        config.title = "Log in"
+        config.cornerStyle = .medium
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = .systemPurple
+        config.background.backgroundColorTransformer =
+            UIConfigurationColorTransformer({ _ in
+                .systemPurple
+            })
+
+        button.configuration = config
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Log in", for: .normal)
-        button.layer.cornerRadius = 5
         button.titleLabel?.font = .boldSystemFont(ofSize: 16)
-        button.backgroundColor = .systemRed
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
         return button
