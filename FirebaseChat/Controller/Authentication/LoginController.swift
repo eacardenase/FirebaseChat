@@ -41,22 +41,51 @@ class LoginController: UIViewController {
     )
 
     lazy var loginButton: UIButton = {
-        let button = UIButton(type: .custom)
-        var config = UIButton.Configuration.filled()
+        let button = UIButton(type: .system)
 
-        config.title = "Log in"
-        config.cornerStyle = .medium
-        config.baseForegroundColor = .white
-        config.baseBackgroundColor = .systemPurple
-        config.background.backgroundColorTransformer =
-            UIConfigurationColorTransformer({ _ in
-                .systemPurple
-            })
-
-        button.configuration = config
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.setTitle("Log in", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.backgroundColor = .systemPurple.withAlphaComponent(0.5)
+        button.layer.cornerRadius = 8
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        button.addTarget(
+            self,
+            action: #selector(loginButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
+    lazy var showRegistrationButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attributedTitle = NSMutableAttributedString(
+            string: "Don't have an account? ",
+            attributes: [
+                .foregroundColor: UIColor.white,
+                .font: UIFont.systemFont(ofSize: 16),
+            ]
+        )
+
+        attributedTitle.append(
+            NSAttributedString(
+                string: "Sign Up",
+                attributes: [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.boldSystemFont(ofSize: 16),
+                ]
+            )
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(showRegistrationButtonTapped),
+            for: .touchUpInside
+        )
 
         return button
     }()
@@ -102,6 +131,7 @@ extension LoginController {
 
         view.addSubview(iconImage)
         view.addSubview(stackView)
+        view.addSubview(showRegistrationButton)
 
         // iconImage
         NSLayoutConstraint.activate([
@@ -127,6 +157,35 @@ extension LoginController {
                 constant: -32
             ),
         ])
+
+        // showRegistrationButton
+        NSLayoutConstraint.activate([
+            showRegistrationButton.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor,
+            ),
+            showRegistrationButton.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+            ),
+        ])
+    }
+
+}
+
+// MARK: - Actions
+
+extension LoginController {
+
+    @objc func loginButtonTapped(_ sender: UIButton) {
+        print(#function)
+    }
+
+    @objc func showRegistrationButtonTapped(_ sender: UIButton) {
+        let controller = RegistrationController()
+
+        navigationController?.pushViewController(
+            controller,
+            animated: true
+        )
     }
 
 }
