@@ -29,27 +29,30 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    let emailContainerView = TextFieldContainerView(
-        image: UIImage(systemName: "envelope"),
-        placeholder: "Email"
-    )
+    let emailTextField: AuthTextField = {
+        let textField = AuthTextField(placeholder: "Email")
 
-    let passwordContainerView = TextFieldContainerView(
-        image: UIImage(systemName: "lock"),
-        placeholder: "Password",
-        isSecure: true
-    )
+        textField.keyboardType = .emailAddress
 
-    lazy var loginButton: UIButton = {
-        let button = UIButton(type: .system)
+        return textField
+    }()
+
+    let passwordTextField: AuthTextField = {
+        let textField = AuthTextField(
+            placeholder: "Password",
+            isSecure: true
+        )
+
+        textField.keyboardType = .asciiCapable
+
+        return textField
+    }()
+
+    lazy var loginButton: AuthButton = {
+        let button = AuthButton(type: .system)
 
         button.setTitle("Log in", for: .normal)
-        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
-        button.backgroundColor = .systemPurple.withAlphaComponent(0.5)
-        button.layer.cornerRadius = 8
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
         button.addTarget(
             self,
             action: #selector(loginButtonTapped),
@@ -120,8 +123,8 @@ extension LoginController {
         navigationController?.navigationBar.isHidden = true
 
         let stackView = UIStackView(arrangedSubviews: [
-            emailContainerView,
-            passwordContainerView,
+            emailTextField,
+            passwordTextField,
             loginButton,
         ])
 
