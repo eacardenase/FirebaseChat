@@ -108,17 +108,6 @@ class LoginController: UIViewController {
 
 extension LoginController {
 
-    private func configureGradientLayer() {
-        let gradient = CAGradientLayer()
-
-        gradient.frame = view.frame
-        gradient.colors = [
-            UIColor.systemPurple.cgColor, UIColor.systemTeal.cgColor,
-        ]
-
-        view.layer.addSublayer(gradient)
-    }
-
     private func setupViews() {
         navigationController?.navigationBar.isHidden = true
 
