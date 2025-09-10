@@ -11,6 +11,29 @@ class RegistrationController: UIViewController {
 
     // MARK: - Properties
 
+    lazy var backButton: UIButton = {
+        let button = UIButton(type: .system)
+        let imageConf = UIImage.SymbolConfiguration(
+            textStyle: .title2,
+            scale: .large,
+        )
+        let image = UIImage(
+            systemName: "chevron.left",
+            withConfiguration: imageConf
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.setImage(image, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(backButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
     lazy var addPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         let imageConf = UIImage.SymbolConfiguration(pointSize: 70)
@@ -138,9 +161,22 @@ extension RegistrationController {
         stackView.axis = .vertical
         stackView.spacing = 16
 
+        view.addSubview(backButton)
         view.addSubview(addPhotoButton)
         view.addSubview(stackView)
         view.addSubview(showLoginControllerButton)
+
+        // backButton
+        NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 16
+            ),
+            backButton.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
+        ])
 
         // addProfilePhotoButton
         NSLayoutConstraint.activate([
@@ -185,6 +221,10 @@ extension RegistrationController {
 // MARK: - Actions
 
 extension RegistrationController {
+
+    @objc func backButtonTapped(_ sender: UIButton) {
+        navigationController?.popViewController(animated: true)
+    }
 
     @objc func addPhotoButtonTapped(_ sender: UIButton) {
         print(#function)
