@@ -138,6 +138,13 @@ class RegistrationController: UIViewController {
 
         configureGradientLayer()
         setupViews()
+
+        let gestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(gestureRecognizer)
     }
 
 }
@@ -169,12 +176,11 @@ extension RegistrationController {
         // backButton
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor,
-                constant: 16
+                equalTo: view.safeAreaLayoutGuide.topAnchor
             ),
             backButton.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                constant: 16
+                constant: 36
             ),
         ])
 
@@ -236,6 +242,10 @@ extension RegistrationController {
 
     @objc func showLoginControllerButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
 
 }

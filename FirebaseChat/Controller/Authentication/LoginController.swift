@@ -100,6 +100,13 @@ class LoginController: UIViewController {
 
         configureGradientLayer()
         setupViews()
+
+        let gestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(gestureRecognizer)
     }
 
 }
@@ -178,6 +185,10 @@ extension LoginController {
             controller,
             animated: true
         )
+    }
+
+    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
 
 }
