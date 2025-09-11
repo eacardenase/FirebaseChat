@@ -11,6 +11,8 @@ class LoginController: UIViewController {
 
     // MARK: - Properties
 
+    private var viewModel = LoginViewModel()
+
     let iconImage: UIImageView = {
         let imageView = UIImageView()
         let imageConf = UIImage.SymbolConfiguration(
@@ -29,21 +31,31 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    let emailTextField: AuthTextField = {
+    lazy var emailTextField: AuthTextField = {
         let textField = AuthTextField(placeholder: "Email")
 
         textField.keyboardType = .emailAddress
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
 
-    let passwordTextField: AuthTextField = {
+    lazy var passwordTextField: AuthTextField = {
         let textField = AuthTextField(
             placeholder: "Password",
             isSecure: true
         )
 
         textField.keyboardType = .asciiCapable
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
@@ -168,11 +180,31 @@ extension LoginController {
         ])
     }
 
+    func checkFormStatus() {
+        if viewModel.formIsValid {
+            loginButton.isEnabled = true
+            loginButton.backgroundColor = .systemPurple
+        } else {
+            loginButton.isEnabled = false
+            loginButton.backgroundColor = .systemPurple.withAlphaComponent(0.5)
+        }
+    }
+
 }
 
 // MARK: - Actions
 
 extension LoginController {
+
+    @objc func textDidChange(_ sender: UITextField) {
+        if sender === emailTextField {
+            viewModel.email = sender.text
+        } else if sender === passwordTextField {
+            viewModel.password = sender.text
+        }
+
+        checkFormStatus()
+    }
 
     @objc func loginButtonTapped(_ sender: UIButton) {
         print(#function)
