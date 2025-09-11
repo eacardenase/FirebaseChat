@@ -180,16 +180,6 @@ extension LoginController {
         ])
     }
 
-    func checkFormStatus() {
-        if viewModel.formIsValid {
-            loginButton.isEnabled = true
-            loginButton.backgroundColor = .systemPurple
-        } else {
-            loginButton.isEnabled = false
-            loginButton.backgroundColor = .systemPurple.withAlphaComponent(0.5)
-        }
-    }
-
 }
 
 // MARK: - Actions
@@ -203,7 +193,7 @@ extension LoginController {
             viewModel.password = sender.text
         }
 
-        checkFormStatus()
+        updateForm()
     }
 
     @objc func loginButtonTapped(_ sender: UIButton) {
@@ -221,6 +211,18 @@ extension LoginController {
 
     @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+
+}
+
+// MARK: - AuthenticationControllerProtocol
+
+extension LoginController: AuthenticationControllerProtocol {
+
+    func updateForm() {
+        loginButton.isEnabled = viewModel.shouldEnableButton
+        loginButton.backgroundColor = viewModel.buttonBackgroundColor
+        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }

@@ -11,6 +11,8 @@ class RegistrationController: UIViewController {
 
     // MARK: - Properties
 
+    private var viewModel = RegistrationViewModel()
+
     lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
         let imageConf = UIImage.SymbolConfiguration(
@@ -53,34 +55,54 @@ class RegistrationController: UIViewController {
         return button
     }()
 
-    let fullNameTextField: AuthTextField = {
+    lazy var fullNameTextField: AuthTextField = {
         let textField = AuthTextField(placeholder: "Full Name")
 
         textField.keyboardType = .asciiCapable
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
 
-    let emailTextField: AuthTextField = {
+    lazy var emailTextField: AuthTextField = {
         let textField = AuthTextField(placeholder: "Email")
 
         textField.keyboardType = .emailAddress
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
 
-    let usernameTextField: AuthTextField = {
+    lazy var usernameTextField: AuthTextField = {
         let textField = AuthTextField(placeholder: "Username")
 
         textField.keyboardType = .asciiCapable
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
 
-    let passwordTextField: AuthTextField = {
+    lazy var passwordTextField: AuthTextField = {
         let textField = AuthTextField(placeholder: "Password", isSecure: true)
 
         textField.keyboardType = .asciiCapable
+        textField.addTarget(
+            self,
+            action: #selector(textDidChange),
+            for: .editingChanged
+        )
 
         return textField
     }()
@@ -229,13 +251,25 @@ extension RegistrationController {
 
 extension RegistrationController {
 
+    @objc func textDidChange(_ sender: UITextField) {
+        if sender === fullNameTextField {
+            viewModel.fullname = sender.text
+        } else if sender === usernameTextField {
+            viewModel.username = sender.text
+        } else if sender === emailTextField {
+            viewModel.email = sender.text
+        } else if sender === passwordTextField {
+            viewModel.password = sender.text
+        }
+
+        updateForm()
+    }
+
     @objc func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
 
     @objc func addPhotoButtonTapped(_ sender: UIButton) {
-        print(#function)
-
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
 
@@ -272,7 +306,7 @@ extension RegistrationController: UIImagePickerControllerDelegate,
         addPhotoButton.imageView?.contentMode = .scaleAspectFill
         addPhotoButton.clipsToBounds = true
         addPhotoButton.layer.cornerRadius = addPhotoButton.frame.height / 2
-        addPhotoButton.layer.borderWidth = 3
+        addPhotoButton.layer.borderWidth = 1.5
         addPhotoButton.layer.borderColor =
             UIColor.white.cgColor
         addPhotoButton.setImage(
@@ -281,6 +315,18 @@ extension RegistrationController: UIImagePickerControllerDelegate,
         )
 
         dismiss(animated: true)
+    }
+
+}
+
+// MARK: - AuthenticationControllerProtocol
+
+extension RegistrationController: AuthenticationControllerProtocol {
+
+    func updateForm() {
+        signUpButton.isEnabled = viewModel.shouldEnableButton
+        signUpButton.backgroundColor = viewModel.buttonBackgroundColor
+        signUpButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }
