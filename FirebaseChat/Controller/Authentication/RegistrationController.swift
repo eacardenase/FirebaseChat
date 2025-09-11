@@ -40,11 +40,10 @@ class RegistrationController: UIViewController {
         let buttonImage = UIImage(
             systemName: "photo.badge.plus",
             withConfiguration: imageConf
-        )
+        )?.withTintColor(.white, renderingMode: .alwaysOriginal)
 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(buttonImage, for: .normal)
-        button.tintColor = .white
         button.addTarget(
             self,
             action: #selector(addPhotoButtonTapped),
@@ -193,6 +192,8 @@ extension RegistrationController {
             addPhotoButton.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
             ),
+            addPhotoButton.widthAnchor.constraint(equalToConstant: 140),
+            addPhotoButton.heightAnchor.constraint(equalToConstant: 140),
         ])
 
         // stackView
@@ -234,6 +235,11 @@ extension RegistrationController {
 
     @objc func addPhotoButtonTapped(_ sender: UIButton) {
         print(#function)
+
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+
+        present(imagePickerController, animated: true)
     }
 
     @objc func signUpButtonTapped(_ sender: UIButton) {
@@ -246,6 +252,35 @@ extension RegistrationController {
 
     @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+
+}
+
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+
+extension RegistrationController: UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate
+{
+
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey:
+            Any]
+    ) {
+        let image = info[.originalImage] as? UIImage
+
+        addPhotoButton.imageView?.contentMode = .scaleAspectFill
+        addPhotoButton.clipsToBounds = true
+        addPhotoButton.layer.cornerRadius = addPhotoButton.frame.height / 2
+        addPhotoButton.layer.borderWidth = 3
+        addPhotoButton.layer.borderColor =
+            UIColor.white.cgColor
+        addPhotoButton.setImage(
+            image?.withRenderingMode(.alwaysOriginal),
+            for: .normal
+        )
+
+        dismiss(animated: true)
     }
 
 }
