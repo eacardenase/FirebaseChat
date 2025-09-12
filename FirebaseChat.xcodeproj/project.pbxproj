@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A5EA36702E74A0DC001CBE36 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A5EA365F2E74A0DC001CBE36 /* README.md */; };
 		A5EA36732E74B284001CBE36 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A5EA36722E74B284001CBE36 /* FirebaseAuth */; };
 		A5EA36752E74B284001CBE36 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A5EA36742E74B284001CBE36 /* FirebaseCore */; };
 		A5EA36772E74B284001CBE36 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A5EA36762E74B284001CBE36 /* FirebaseFirestore */; };
@@ -15,6 +16,7 @@
 
 /* Begin PBXFileReference section */
 		A50F3E912E6B6B3F00EA625A /* FirebaseChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirebaseChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5EA365F2E74A0DC001CBE36 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +58,7 @@
 		A50F3E882E6B6B3F00EA625A = {
 			isa = PBXGroup;
 			children = (
+				A5EA365F2E74A0DC001CBE36 /* README.md */,
 				A50F3E932E6B6B3F00EA625A /* FirebaseChat */,
 				A50F3E922E6B6B3F00EA625A /* Products */,
 			);
@@ -140,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5EA36702E74A0DC001CBE36 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
