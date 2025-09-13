@@ -65,6 +65,19 @@ extension ConversationsController {
         view.addSubview(tableView)
     }
 
+    private func presentLoginScreen() {
+        OperationQueue.main.addOperation {
+            let loginController = LoginController()
+            let navController = UINavigationController(
+                rootViewController: loginController
+            )
+
+            navController.modalPresentationStyle = .fullScreen
+
+            self.present(navController, animated: true)
+        }
+    }
+
     private func logout() {
         do {
             try Auth.auth().signOut()
@@ -145,7 +158,7 @@ extension ConversationsController {
         if let currentUser = Auth.auth().currentUser {
             print("DEBUG: User id is \(currentUser.uid)")
         } else {
-            print("DEBUG: User is not logged in. Present login screen...")
+            presentLoginScreen()
         }
     }
 
