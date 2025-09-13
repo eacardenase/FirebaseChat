@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 9/5/25.
 //
 
+import FirebaseAuth
 import UIKit
 
 class ConversationsController: UIViewController {
@@ -33,6 +34,7 @@ class ConversationsController: UIViewController {
 
         setupNavBar()
         setupViews()
+        authenticateUser()
     }
 
 }
@@ -63,6 +65,14 @@ extension ConversationsController {
         view.addSubview(tableView)
     }
 
+    private func logout() {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            print("DEBUG: Error signing out. \(error.localizedDescription)")
+        }
+    }
+
 }
 
 // MARK: - Actions
@@ -70,7 +80,21 @@ extension ConversationsController {
 extension ConversationsController {
 
     @objc func profileButtonTapped(_ sender: UIBarButtonItem) {
-        print(#function)
+        let alertController = UIAlertController(
+            title: nil,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+
+        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
+        { _ in self.logout() }
+
+        alertController.addAction(logoutAction)
+        alertController.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
+
+        present(alertController, animated: true)
     }
 
 }
@@ -109,6 +133,20 @@ extension ConversationsController: UITableViewDelegate {
         didSelectRowAt indexPath: IndexPath
     ) {
         print(indexPath.row)
+    }
+
+}
+
+// MARK: - API
+
+extension ConversationsController {
+
+    func authenticateUser() {
+        if let currentUser = Auth.auth().currentUser {
+            print("DEBUG: User id is \(currentUser.uid)")
+        } else {
+            print("DEBUG: User is not logged in. Present login screen...")
+        }
     }
 
 }

@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let appearance = UINavigationBarAppearance()
         let navController = UINavigationController(
-            rootViewController: LoginController()
+            rootViewController: ConversationsController()
         )
 
         appearance.configureWithTransparentBackground()
