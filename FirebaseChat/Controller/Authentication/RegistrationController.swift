@@ -352,7 +352,7 @@ extension RegistrationController {
                                 return
                             }
 
-                            print("DEBUG: Did create user...")
+                            self.dismiss(animated: true)
                         }
                 }
             }
