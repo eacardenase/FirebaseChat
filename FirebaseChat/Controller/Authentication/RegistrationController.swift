@@ -282,9 +282,24 @@ extension RegistrationController {
         guard let fullname = viewModel.fullname,
             let username = viewModel.username?.lowercased(),
             let email = viewModel.email?.lowercased(),
-            let password = viewModel.password,
-            let profileImage
+            let password = viewModel.password
         else {
+            return
+        }
+
+        guard let profileImage else {
+            let alertController = UIAlertController(
+                title: "Profile Photo",
+                message: "Please provide an image to be used as profile photo.",
+                preferredStyle: .alert
+            )
+
+            alertController.addAction(
+                UIAlertAction(title: "OK", style: .default)
+            )
+
+            present(alertController, animated: true)
+
             return
         }
 
@@ -296,13 +311,28 @@ extension RegistrationController {
             profileImage: profileImage
         )
 
+        showLoader()
+
         AuthService.createUser(credentials: credentials) { result in
             switch result {
-            case .success(let user):
+            case .success:
                 self.dismiss(animated: true)
             case .failure(let error):
-                print(error.localizedDescription)
+                if case .serverError(let message) = error {
+                    let alertController = UIAlertController(
+                        title: "Error",
+                        message: message,
+                        preferredStyle: .alert
+                    )
+                    alertController.addAction(
+                        UIAlertAction(title: "OK", style: .default)
+                    )
+
+                    self.present(alertController, animated: true)
+                }
             }
+
+            self.showLoader(false)
         }
     }
 

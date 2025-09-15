@@ -8,8 +8,6 @@
 import FirebaseAuth
 import FirebaseFirestore
 
-//import UIKit
-
 enum AuthError: Error {
     case serverError(String)
 }
@@ -37,14 +35,8 @@ struct AuthService {
 
             if let error {
                 completion(
-                    .failure(
-                        .serverError(
-                            "Failed to log in with error: \(error.localizedDescription)"
-                        )
-                    )
+                    .failure(.serverError(error.localizedDescription))
                 )
-
-                completion(.failure(.serverError(error.localizedDescription)))
 
                 return
             }

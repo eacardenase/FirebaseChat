@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 9/6/25.
 //
 
+import JGProgressHUD
 import UIKit
 
 class LoginController: UIViewController {
@@ -203,15 +204,28 @@ extension LoginController {
             return
         }
 
+        showLoader()
+
         AuthService.logUserIn(withEmail: email, password: password) { result in
             switch result {
-            case .success(let user):
-                print(user.uid)
+            case .success:
+                self.dismiss(animated: true)
             case .failure(let error):
-                print(error.localizedDescription)
+                if case .serverError(let message) = error {
+                    let alertController = UIAlertController(
+                        title: "Error",
+                        message: message,
+                        preferredStyle: .alert
+                    )
+                    alertController.addAction(
+                        UIAlertAction(title: "OK", style: .default)
+                    )
+
+                    self.present(alertController, animated: true)
+                }
             }
 
-            self.dismiss(animated: true)
+            self.showLoader(false)
         }
     }
 
@@ -238,6 +252,8 @@ extension LoginController: AuthenticationControllerProtocol {
         loginButton.isEnabled = viewModel.shouldEnableButton
         loginButton.backgroundColor = viewModel.buttonBackgroundColor
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
+        
+        print("This should not be printed.")
     }
 
 }
