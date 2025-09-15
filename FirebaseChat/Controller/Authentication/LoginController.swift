@@ -197,15 +197,20 @@ extension LoginController {
     }
 
     @objc func loginButtonTapped(_ sender: UIButton) {
-        print(#function)
-
         guard let email = viewModel.email,
             let password = viewModel.password
         else {
             return
         }
 
-        AuthService.logUserIn(withEmail: email, password: password) {
+        AuthService.logUserIn(withEmail: email, password: password) { result in
+            switch result {
+            case .success(let user):
+                print(user.uid)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+
             self.dismiss(animated: true)
         }
     }
