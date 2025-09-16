@@ -16,6 +16,7 @@ class NewMessageController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavBar()
         setupViews()
     }
 
@@ -25,8 +26,27 @@ class NewMessageController: UITableViewController {
 
 extension NewMessageController {
 
+    private func setupNavBar() {
+        navigationItem.title = "New Message"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .cancel,
+            target: self,
+            action: #selector(dismissController)
+        )
+    }
+
     private func setupViews() {
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .white
+    }
+
+}
+
+// MARK: - Actions
+
+extension NewMessageController {
+
+    @objc func dismissController(_ sender: UIBarButtonItem) {
+        dismiss(animated: true)
     }
 
 }

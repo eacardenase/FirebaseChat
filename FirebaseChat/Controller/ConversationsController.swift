@@ -165,6 +165,7 @@ extension ConversationsController {
             rootViewController: NewMessageController()
         )
 
+        navController.setupAppearance()
         navController.modalPresentationStyle = .fullScreen
 
         present(navController, animated: true)

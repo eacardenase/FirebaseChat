@@ -20,25 +20,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = UIWindow(windowScene: scene)
 
-        let appearance = UINavigationBarAppearance()
         let navController = UINavigationController(
             rootViewController: ConversationsController()
         )
 
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .systemPurple
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-        appearance.largeTitleTextAttributes = [
-            .foregroundColor: UIColor.white
-        ]
-
-        navController.navigationBar.tintColor = .white
-        navController.navigationBar.standardAppearance = appearance
-        navController.navigationBar.scrollEdgeAppearance = appearance
-        navController.navigationBar.compactAppearance = appearance
-        navController.navigationBar.compactScrollEdgeAppearance = appearance
+        navController.setupAppearance()
 
         window?.rootViewController = navController
         window?.makeKeyAndVisible()
