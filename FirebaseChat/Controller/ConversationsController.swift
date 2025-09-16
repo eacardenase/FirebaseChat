@@ -5,7 +5,6 @@
 //  Created by Edwin Cardenas on 9/5/25.
 //
 
-import FirebaseAuth
 import UIKit
 
 class ConversationsController: UIViewController {
@@ -122,12 +121,18 @@ extension ConversationsController {
     }
 
     private func logout() {
-        do {
-            try Auth.auth().signOut()
+        showLoader()
 
-            presentLoginScreen()
-        } catch {
-            print("DEBUG: Error signing out. \(error.localizedDescription)")
+        AuthService.logUserOut { error in
+            self.showLoader(false)
+
+            if let error {
+                print("DEBUG: Error signing out. \(error.localizedDescription)")
+
+                return
+            }
+
+            self.presentLoginScreen()
         }
     }
 
@@ -210,10 +215,10 @@ extension ConversationsController: UITableViewDelegate {
 extension ConversationsController {
 
     func authenticateUser() {
-        if let currentUser = Auth.auth().currentUser {
-            print("DEBUG: User id is \(currentUser.uid)")
-        } else {
-            presentLoginScreen()
+        AuthService.fetchUser { result in
+            if case .failure = result {
+                self.presentLoginScreen()
+            }
         }
     }
 

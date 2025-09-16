@@ -45,6 +45,16 @@ struct AuthService {
         }
     }
 
+    static func logUserOut(completion: @escaping (Error?) -> Void) {
+        do {
+            try Auth.auth().signOut()
+
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
+
     static func createUser(
         credentials: RegistrationCredentials,
         completion: @escaping (Result<User, AuthError>) -> Void
