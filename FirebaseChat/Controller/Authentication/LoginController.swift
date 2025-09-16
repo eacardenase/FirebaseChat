@@ -252,8 +252,6 @@ extension LoginController: AuthenticationControllerProtocol {
         loginButton.isEnabled = viewModel.shouldEnableButton
         loginButton.backgroundColor = viewModel.buttonBackgroundColor
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
-        
-        print("This should not be printed.")
     }
 
 }

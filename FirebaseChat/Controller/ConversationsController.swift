@@ -27,6 +27,28 @@ class ConversationsController: UIViewController {
         return _tableView
     }()
 
+    private lazy var newMessageButton: UIButton = {
+        let button = UIButton(type: .system)
+        let imageConf = UIImage.SymbolConfiguration(
+            textStyle: .title3,
+            scale: .large,
+        )
+
+        let image = UIImage(systemName: "plus", withConfiguration: imageConf)
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(image, for: .normal)
+        button.backgroundColor = .systemPurple
+        button.tintColor = .white
+        button.addTarget(
+            self,
+            action: #selector(newMessageButtonTapped),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -35,6 +57,10 @@ class ConversationsController: UIViewController {
         setupNavBar()
         setupViews()
         authenticateUser()
+    }
+
+    override func viewDidLayoutSubviews() {
+        newMessageButton.layer.cornerRadius = newMessageButton.frame.height / 2
     }
 
 }
@@ -63,6 +89,23 @@ extension ConversationsController {
         tableView.frame = view.frame
 
         view.addSubview(tableView)
+        view.addSubview(newMessageButton)
+
+        // newMessageButton
+        NSLayoutConstraint.activate([
+            newMessageButton.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                constant: -24
+            ),
+            newMessageButton.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -16
+            ),
+            newMessageButton.heightAnchor.constraint(equalToConstant: 56),
+            newMessageButton.widthAnchor.constraint(
+                equalTo: newMessageButton.heightAnchor
+            ),
+        ])
     }
 
     private func presentLoginScreen() {
@@ -110,6 +153,16 @@ extension ConversationsController {
         )
 
         present(alertController, animated: true)
+    }
+
+    @objc func newMessageButtonTapped(_ sender: UIButton) {
+        let navController = UINavigationController(
+            rootViewController: NewMessageController()
+        )
+
+        navController.modalPresentationStyle = .fullScreen
+
+        present(navController, animated: true)
     }
 
 }
