@@ -11,6 +11,8 @@ class NewMessageController: UITableViewController {
 
     // MARK: - Properties
 
+    var users = [User]()
+
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
@@ -65,7 +67,7 @@ extension NewMessageController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return 2
+        return users.count
     }
 
     override func tableView(
@@ -81,6 +83,8 @@ extension NewMessageController {
             fatalError("Could not instantiate UserCell")
         }
 
+        cell.user = users[indexPath.row]
+
         return cell
     }
 
@@ -93,7 +97,9 @@ extension NewMessageController {
     private func fetchUsers() {
         UserService.fetchUsers { result in
             if case .success(let users) = result {
-                print(users)
+                self.users = users
+
+                self.tableView.reloadData()
             }
         }
     }

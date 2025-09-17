@@ -76,14 +76,14 @@ struct UserService {
             completion(.success(users))
         }
     }
-    
+
     static func storeUser(
         withId uid: String,
         data: [String: String],
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
         let user = User(uid: uid, dictionary: data)
-        
+
         Firestore.firestore().collection("users").document(uid)
             .setData(
                 data
@@ -94,10 +94,10 @@ struct UserService {
                             .serverError(error.localizedDescription)
                         )
                     )
-                    
+
                     return
                 }
-                
+
                 completion(.success(user))
             }
     }

@@ -11,6 +11,12 @@ class UserCell: UITableViewCell {
 
     // MARK: - Properties
 
+    var user: User? {
+        didSet {
+            configure()
+        }
+    }
+
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -26,7 +32,6 @@ class UserCell: UITableViewCell {
         let label = UILabel()
 
         label.font = .preferredFont(forTextStyle: .headline)
-        label.text = "eacardenase"
 
         return label
     }()
@@ -36,7 +41,6 @@ class UserCell: UITableViewCell {
 
         label.font = .preferredFont(forTextStyle: .body)
         label.textColor = .lightGray
-        label.text = "Edwin Cardenas"
 
         return label
     }()
@@ -110,6 +114,13 @@ extension UserCell {
 
         profileImageView.layer.cornerRadius =
             profileImageHeightAnchor.constant / 2
+    }
+
+    private func configure() {
+        guard let user else { return }
+
+        usernameLabel.text = user.username
+        fullnameLabel.text = user.fullname
     }
 
 }
