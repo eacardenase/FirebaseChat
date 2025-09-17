@@ -60,8 +60,6 @@ class UserCell: UITableViewCell {
 extension UserCell {
 
     private func setupViews() {
-        translatesAutoresizingMaskIntoConstraints = false
-
         let stackView = UIStackView(arrangedSubviews: [
             usernameLabel,
             fullnameLabel,

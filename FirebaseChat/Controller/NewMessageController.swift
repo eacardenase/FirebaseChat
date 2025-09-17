@@ -16,6 +16,7 @@ class NewMessageController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        fetchUsers()
         setupNavBar()
         setupViews()
 
@@ -81,6 +82,20 @@ extension NewMessageController {
         }
 
         return cell
+    }
+
+}
+
+// MARK: - API
+
+extension NewMessageController {
+
+    private func fetchUsers() {
+        UserService.fetchUsers { result in
+            if case .success(let users) = result {
+                print(users)
+            }
+        }
     }
 
 }

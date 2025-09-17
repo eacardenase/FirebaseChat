@@ -6,9 +6,9 @@
 //
 
 import FirebaseAuth
-import FirebaseFirestore
+import UIKit
 
-enum AuthError: Error {
+enum NetworkingError: Error {
     case serverError(String)
 }
 
@@ -27,21 +27,20 @@ struct AuthService {
     static func logUserIn(
         withEmail email: String,
         password: String,
-        completion: @escaping (Result<User, AuthError>) -> Void
+        completion: @escaping (Error?) -> Void
     ) {
         Auth.auth().signIn(withEmail: email, password: password) {
             result,
             error in
 
             if let error {
-                completion(
-                    .failure(.serverError(error.localizedDescription))
-                )
+                completion(error)
 
                 return
             }
 
-            fetchUser(completion: completion)
+            completion(nil)
+
         }
     }
 
@@ -57,7 +56,7 @@ struct AuthService {
 
     static func createUser(
         credentials: RegistrationCredentials,
-        completion: @escaping (Result<User, AuthError>) -> Void
+        completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
         Auth.auth().createUser(
             withEmail: credentials.email,
@@ -95,7 +94,7 @@ struct AuthService {
                         "profileImageUrl": profileImageUrl,
                     ]
 
-                    AuthService.storeDataForUser(
+                    UserService.storeUser(
                         withId: uid,
                         data: userData,
                         completion: completion
@@ -110,70 +109,18 @@ struct AuthService {
         }
     }
 
-    static func fetchUser(
-        completion: @escaping (Result<User, AuthError>) -> Void
+    static func verifyLogin(
+        completion: @escaping (NetworkingError?) -> Void
     ) {
-        guard let uid = Auth.auth().currentUser?.uid else {
+        guard Auth.auth().currentUser != nil else {
             completion(
-                .failure(
-                    .serverError("Failed to get user id, current user is nil.")
-                )
+                .serverError("Failed to get user, current user is nil.")
             )
 
             return
         }
 
-        Firestore.firestore().collection("users").document(uid).getDocument {
-            snapshot,
-            error in
-
-            if let error {
-                completion(
-                    .failure(.serverError(error.localizedDescription))
-                )
-
-                return
-            }
-
-            guard let snapshot, snapshot.exists,
-                let userData = snapshot.data()
-            else {
-                completion(
-                    .failure(.serverError("Failed to get user data."))
-                )
-
-                return
-            }
-
-            let user = User(uid: uid, dictionary: userData)
-
-            completion(.success(user))
-        }
-    }
-
-    static func storeDataForUser(
-        withId uid: String,
-        data: [String: String],
-        completion: @escaping (Result<User, AuthError>) -> Void
-    ) {
-        let user = User(uid: uid, dictionary: data)
-
-        Firestore.firestore().collection("users").document(uid)
-            .setData(
-                data
-            ) { error in
-                if let error {
-                    completion(
-                        .failure(
-                            .serverError(error.localizedDescription)
-                        )
-                    )
-
-                    return
-                }
-
-                completion(.success(user))
-            }
+        completion(nil)
     }
 
 }

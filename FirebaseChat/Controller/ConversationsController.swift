@@ -216,8 +216,10 @@ extension ConversationsController: UITableViewDelegate {
 extension ConversationsController {
 
     func authenticateUser() {
-        AuthService.fetchUser { result in
-            if case .failure = result {
+        AuthService.verifyLogin { error in
+            if case .serverError(let message) = error {
+                print("DEBUG: Unable to verify login with error: \(message)")
+
                 self.presentLoginScreen()
             }
         }

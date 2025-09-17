@@ -206,26 +206,25 @@ extension LoginController {
 
         showLoader()
 
-        AuthService.logUserIn(withEmail: email, password: password) { result in
-            switch result {
-            case .success:
-                self.dismiss(animated: true)
-            case .failure(let error):
-                if case .serverError(let message) = error {
-                    let alertController = UIAlertController(
-                        title: "Error",
-                        message: message,
-                        preferredStyle: .alert
-                    )
-                    alertController.addAction(
-                        UIAlertAction(title: "OK", style: .default)
-                    )
+        AuthService.logUserIn(withEmail: email, password: password) { error in
+            self.showLoader(false)
 
-                    self.present(alertController, animated: true)
-                }
+            if let error {
+                let alertController = UIAlertController(
+                    title: "Error",
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+                alertController.addAction(
+                    UIAlertAction(title: "OK", style: .default)
+                )
+
+                self.present(alertController, animated: true)
+
+                return
             }
 
-            self.showLoader(false)
+            self.dismiss(animated: true)
         }
     }
 
