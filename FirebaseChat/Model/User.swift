@@ -24,4 +24,8 @@ struct User {
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
     }
 
+    static func makeSkeletion() -> User {
+        return User(uid: "1", dictionary: [:])
+    }
+
 }

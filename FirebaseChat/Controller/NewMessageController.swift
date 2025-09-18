@@ -24,19 +24,25 @@ class NewMessageController: UITableViewController {
 
     var users = [User]()
 
+    var isLoaded = false
+
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fetchUsers()
+        setupSkeletons()
         setupNavBar()
         setupViews()
+        fetchUsers()
 
-        tableView.estimatedRowHeight = 80
         tableView.register(
             UserCell.self,
             forCellReuseIdentifier: NSStringFromClass(UserCell.self)
+        )
+        tableView.register(
+            UserSkeletonCell.self,
+            forCellReuseIdentifier: NSStringFromClass(UserSkeletonCell.self)
         )
     }
 
@@ -57,6 +63,25 @@ extension NewMessageController {
 
     private func setupViews() {
         view.backgroundColor = .white
+    }
+
+    private func setupSkeletons() {
+        let skeletonAccount = User.makeSkeletion()
+
+        users = Array(repeating: skeletonAccount, count: 10)
+
+        configureTableCells(with: users)
+    }
+
+    private func configureTableCells(with users: [User]) {
+
+    }
+
+    private func reloadViews() {
+        isLoaded = true
+
+        configureTableCells(with: users)
+        tableView.reloadData()
     }
 
 }
@@ -86,6 +111,15 @@ extension NewMessageController {
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
+        if !isLoaded {
+            let skeletonCell = tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(UserSkeletonCell.self),
+                for: indexPath
+            )
+
+            return skeletonCell
+        }
+
         guard
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: NSStringFromClass(UserCell.self),
@@ -127,7 +161,7 @@ extension NewMessageController {
             if case .success(let users) = result {
                 self.users = users
 
-                self.tableView.reloadData()
+                self.reloadViews()
             }
         }
     }
