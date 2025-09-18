@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 9/16/25.
 //
 
+import SDWebImage
 import UIKit
 
 class UserCell: UITableViewCell {
@@ -23,7 +24,7 @@ class UserCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .systemPurple.withAlphaComponent(0.5)
         imageView.contentMode = .scaleAspectFill
-        //        imageView.clipsToBounds = true
+        imageView.clipsToBounds = true
 
         return imageView
     }()
@@ -121,6 +122,10 @@ extension UserCell {
 
         usernameLabel.text = user.username
         fullnameLabel.text = user.fullname
+
+        guard let url = URL(string: user.profileImageUrl) else { return }
+
+        profileImageView.sd_setImage(with: url)
     }
 
 }
