@@ -161,8 +161,11 @@ extension ConversationsController {
     }
 
     @objc func newMessageButtonTapped(_ sender: UIButton) {
+        let controller = NewMessageController()
+        controller.delegate = self
+
         let navController = UINavigationController(
-            rootViewController: NewMessageController()
+            rootViewController: controller
         )
 
         navController.setupAppearance()
@@ -223,6 +226,23 @@ extension ConversationsController {
                 self.presentLoginScreen()
             }
         }
+    }
+
+}
+
+// MARK: - NewMessageControllerDelegate
+
+extension ConversationsController: NewMessageControllerDelegate {
+
+    func controller(
+        _ controller: NewMessageController,
+        wantsToChatWith user: User
+    ) {
+        controller.dismiss(animated: true)
+
+        let chatController = ChatController(user: user)
+
+        navigationController?.pushViewController(chatController, animated: true)
     }
 
 }

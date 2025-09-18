@@ -7,9 +7,20 @@
 
 import UIKit
 
+protocol NewMessageControllerDelegate: AnyObject {
+
+    func controller(
+        _ controller: NewMessageController,
+        wantsToChatWith user: User
+    )
+
+}
+
 class NewMessageController: UITableViewController {
 
     // MARK: - Properties
+
+    weak var delegate: NewMessageControllerDelegate?
 
     var users = [User]()
 
@@ -22,6 +33,7 @@ class NewMessageController: UITableViewController {
         setupNavBar()
         setupViews()
 
+        tableView.estimatedRowHeight = 80
         tableView.register(
             UserCell.self,
             forCellReuseIdentifier: NSStringFromClass(UserCell.self)
@@ -84,8 +96,24 @@ extension NewMessageController {
         }
 
         cell.user = users[indexPath.row]
+        cell.selectionStyle = .none
 
         return cell
+    }
+
+}
+
+// MARK: - UITableViewDelegate
+
+extension NewMessageController {
+
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
+        let user = users[indexPath.row]
+
+        delegate?.controller(self, wantsToChatWith: user)
     }
 
 }
