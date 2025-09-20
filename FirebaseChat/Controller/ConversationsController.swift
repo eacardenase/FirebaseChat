@@ -238,11 +238,14 @@ extension ConversationsController: NewMessageControllerDelegate {
         _ controller: NewMessageController,
         wantsToChatWith user: User
     ) {
-        controller.dismiss(animated: true)
+        controller.dismiss(animated: true) {
+            let chatController = ChatController(user: user)
 
-        let chatController = ChatController(user: user)
-
-        navigationController?.pushViewController(chatController, animated: true)
+            self.navigationController?.pushViewController(
+                chatController,
+                animated: true
+            )
+        }
     }
 
 }

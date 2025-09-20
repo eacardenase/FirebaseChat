@@ -68,7 +68,7 @@ extension NewMessageController {
     private func setupSkeletons() {
         let skeletonAccount = User.makeSkeletion()
 
-        users = Array(repeating: skeletonAccount, count: 10)
+        users = Array(repeating: skeletonAccount, count: 5)
 
         configureTableCells(with: users)
     }

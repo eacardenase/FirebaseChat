@@ -15,7 +15,6 @@ class UserSkeletonCell: UITableViewCell {
         let imageView = UIImageView()
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .systemPurple.withAlphaComponent(0.5)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 
@@ -43,6 +42,7 @@ class UserSkeletonCell: UITableViewCell {
 
     // MARK: - Gradients
 
+    let profileImageLayer = CAGradientLayer()
     let usernameLayer = CAGradientLayer()
     let fullnameLayer = CAGradientLayer()
 
@@ -64,6 +64,8 @@ class UserSkeletonCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+
+        profileImageLayer.frame = profileImageView.bounds
 
         usernameLayer.frame = usernameLabel.bounds
         usernameLayer.cornerRadius = usernameLabel.frame.height / 2
@@ -137,6 +139,10 @@ extension UserSkeletonCell {
     }
 
     private func setupLayers() {
+        profileImageLayer.startPoint = CGPoint(x: 0, y: 0.5)
+        profileImageLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        profileImageView.layer.addSublayer(profileImageLayer)
+
         usernameLayer.startPoint = CGPoint(x: 0, y: 0.5)
         usernameLayer.endPoint = CGPoint(x: 1, y: 0.5)
         usernameLabel.layer.addSublayer(usernameLayer)
@@ -147,7 +153,13 @@ extension UserSkeletonCell {
     }
 
     private func setupAnimation() {
-        let usernameGroup = makeAnimationGroup()
+        let profileImageGroup = makeAnimationGroup()
+        profileImageLayer.add(
+            profileImageGroup,
+            forKey: #keyPath(CAGradientLayer.backgroundColor)
+        )
+
+        let usernameGroup = makeAnimationGroup(previousGroup: profileImageGroup)
         usernameLayer.add(
             usernameGroup,
             forKey: #keyPath(CAGradientLayer.backgroundColor)

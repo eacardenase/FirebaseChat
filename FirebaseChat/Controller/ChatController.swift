@@ -13,6 +13,8 @@ class ChatController: UICollectionViewController {
 
     private let user: User
 
+    private let customInputView = CustomInputAccessoryView()
+
     // MARK: - Initializers
 
     init(user: User) {
@@ -23,6 +25,14 @@ class ChatController: UICollectionViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override var inputAccessoryView: UIView? {
+        return customInputView
     }
 
     // MARK: - View Lifecycle
@@ -36,11 +46,15 @@ class ChatController: UICollectionViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        becomeFirstResponder()
+
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
+        resignFirstResponder()
 
         navigationController?.navigationBar.prefersLargeTitles = true
     }
