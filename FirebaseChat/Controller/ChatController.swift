@@ -41,12 +41,19 @@ class ChatController: UICollectionViewController {
         super.viewDidLoad()
 
         setupViews()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(tapGesture)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        becomeFirstResponder()
+        customInputView.messageInputTextView.becomeFirstResponder()
 
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -54,7 +61,7 @@ class ChatController: UICollectionViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        resignFirstResponder()
+        customInputView.messageInputTextView.resignFirstResponder()
 
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -69,6 +76,16 @@ extension ChatController {
         collectionView.backgroundColor = .white
 
         navigationItem.title = user.username
+    }
+
+}
+
+// MARK: - Actions
+
+extension ChatController {
+
+    @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        customInputView.messageInputTextView.resignFirstResponder()
     }
 
 }

@@ -11,7 +11,7 @@ class CustomInputAccessoryView: UIView {
 
     // MARK: - Properties
 
-    private let messageInputTextView: UITextView = {
+    let messageInputTextView: UITextView = {
         let textView = UITextView()
 
         textView.translatesAutoresizingMaskIntoConstraints = false
