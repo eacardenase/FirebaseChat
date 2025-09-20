@@ -17,6 +17,8 @@ class CustomInputAccessoryView: UIView {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.font = .systemFont(ofSize: 16)
         textView.isScrollEnabled = false
+        textView.tintColor = .systemPurple
+        textView.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
         return textView
     }()
@@ -34,7 +36,24 @@ class CustomInputAccessoryView: UIView {
             for: .touchUpInside
         )
 
+        button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        button.setContentCompressionResistancePriority(
+            .required,
+            for: .horizontal
+        )
+
         return button
+    }()
+
+    private let placeholderLabel: UILabel = {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Enter message..."
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .lightGray
+
+        return label
     }()
 
     // MARK: - Initializers
@@ -45,6 +64,14 @@ class CustomInputAccessoryView: UIView {
         autoresizingMask = [.flexibleHeight]
 
         setupViews()
+        addShadow()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(textDidChange),
+            name: UITextView.textDidChangeNotification,
+            object: nil
+        )
     }
 
     required init?(coder: NSCoder) {
@@ -62,10 +89,11 @@ class CustomInputAccessoryView: UIView {
 extension CustomInputAccessoryView {
 
     private func setupViews() {
-        backgroundColor = .systemPink
+        backgroundColor = .white
 
         addSubview(messageInputTextView)
         addSubview(sendButton)
+        addSubview(placeholderLabel)
 
         // messageInputTextView
         NSLayoutConstraint.activate([
@@ -92,11 +120,27 @@ extension CustomInputAccessoryView {
             ),
             sendButton.trailingAnchor.constraint(
                 equalTo: trailingAnchor,
-                constant: -8
+                constant: -16
             ),
-            sendButton.heightAnchor.constraint(equalToConstant: 50),
-            sendButton.widthAnchor.constraint(equalToConstant: 50),
         ])
+
+        // placeholderLabel
+        NSLayoutConstraint.activate([
+            placeholderLabel.leadingAnchor.constraint(
+                equalTo: messageInputTextView.leadingAnchor,
+                constant: 8
+            ),
+            placeholderLabel.centerYAnchor.constraint(
+                equalTo: messageInputTextView.centerYAnchor
+            ),
+        ])
+    }
+
+    private func addShadow() {
+        layer.shadowColor = UIColor.lightGray.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: -8)
+        layer.shadowOpacity = 0.25
+        layer.shadowRadius = 8
     }
 
 }
@@ -107,6 +151,10 @@ extension CustomInputAccessoryView {
 
     @objc func sendButtonTapped(_ sender: UIButton) {
         print(#function)
+    }
+
+    @objc func textDidChange(_ sender: NSNotification) {
+        placeholderLabel.isHidden = !messageInputTextView.text.isEmpty
     }
 
 }
