@@ -12,8 +12,16 @@ class ChatController: UICollectionViewController {
     // MARK: - Properties
 
     private let user: User
+    private var messages = [Message]()
+    var fromCurrentUser = false
 
-    private let customInputView = CustomInputAccessoryView()
+    private lazy var customInputView: CustomInputAccessoryView = {
+        let inputView = CustomInputAccessoryView()
+
+        inputView.delegate = self
+
+        return inputView
+    }()
 
     // MARK: - Initializers
 
@@ -102,7 +110,7 @@ extension ChatController {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return 5
+        return messages.count
     }
 
     override func collectionView(
@@ -117,6 +125,8 @@ extension ChatController {
         else {
             fatalError("Could not instantiate ChatMessageCell")
         }
+
+        cell.message = messages[indexPath.row]
 
         return cell
     }
@@ -140,6 +150,30 @@ extension ChatController: UICollectionViewDelegateFlowLayout {
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         return CGSize(width: view.frame.width, height: 50)
+    }
+
+}
+
+// MARK: - CustomInputAccessoryViewDelegate
+
+extension ChatController: CustomInputAccessoryViewDelegate {
+
+    func inputView(
+        _ inputView: CustomInputAccessoryView,
+        wantsToSend message: String
+    ) {
+        inputView.messageInputTextView.text = nil
+
+        fromCurrentUser.toggle()
+
+        let newMessage = Message(
+            text: message,
+            isFromCurrentUser: fromCurrentUser
+        )
+
+        messages.append(newMessage)
+
+        collectionView.reloadData()
     }
 
 }

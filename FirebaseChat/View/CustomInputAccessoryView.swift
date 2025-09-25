@@ -7,9 +7,20 @@
 
 import UIKit
 
+protocol CustomInputAccessoryViewDelegate: AnyObject {
+
+    func inputView(
+        _ inputView: CustomInputAccessoryView,
+        wantsToSend message: String
+    )
+
+}
+
 class CustomInputAccessoryView: UIView {
 
     // MARK: - Properties
+
+    weak var delegate: CustomInputAccessoryViewDelegate?
 
     let messageInputTextView: UITextView = {
         let textView = UITextView()
@@ -150,7 +161,11 @@ extension CustomInputAccessoryView {
 extension CustomInputAccessoryView {
 
     @objc func sendButtonTapped(_ sender: UIButton) {
-        print(#function)
+        guard let message = messageInputTextView.text, !message.isEmpty else {
+            return
+        }
+
+        delegate?.inputView(self, wantsToSend: message)
     }
 
     @objc func textDidChange(_ sender: NSNotification) {

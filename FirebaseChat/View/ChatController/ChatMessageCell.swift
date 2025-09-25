@@ -11,6 +11,12 @@ class ChatMessageCell: UICollectionViewCell {
 
     // MARK: - Properties
 
+    var message: Message? {
+        didSet {
+            configure()
+        }
+    }
+
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -27,7 +33,6 @@ class ChatMessageCell: UICollectionViewCell {
 
         _textView.translatesAutoresizingMaskIntoConstraints = false
         _textView.textColor = .white
-        _textView.text = "Some test message for now..."
         _textView.backgroundColor = .clear
         _textView.font = .systemFont(ofSize: 16)
         _textView.isScrollEnabled = false
@@ -128,6 +133,17 @@ extension ChatMessageCell {
                 constant: -4
             ),
         ])
+    }
+
+    private func configure() {
+        guard let message else { return }
+
+        let viewModel = MessageViewModel(message: message)
+
+        bubbleContainer.backgroundColor = viewModel.messageBackgroundColor
+
+        textView.text = message.text
+        textView.textColor = viewModel.messageTextColor
     }
 
 }
