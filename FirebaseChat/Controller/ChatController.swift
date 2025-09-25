@@ -20,7 +20,7 @@ class ChatController: UICollectionViewController {
     init(user: User) {
         self.user = user
 
-        super.init(collectionViewLayout: UICollectionViewLayout())
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
 
     required init?(coder: NSCoder) {
@@ -42,6 +42,14 @@ class ChatController: UICollectionViewController {
 
         setupViews()
 
+        collectionView.alwaysBounceVertical = true
+        collectionView.register(
+            ChatMessageCell.self,
+            forCellWithReuseIdentifier: NSStringFromClass(
+                ChatMessageCell.self
+            )
+        )
+
         let tapGesture = UITapGestureRecognizer(
             target: self,
             action: #selector(dismissKeyboard)
@@ -53,15 +61,11 @@ class ChatController: UICollectionViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        customInputView.messageInputTextView.becomeFirstResponder()
-
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        customInputView.messageInputTextView.resignFirstResponder()
 
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -86,6 +90,56 @@ extension ChatController {
 
     @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         customInputView.messageInputTextView.resignFirstResponder()
+    }
+
+}
+
+// MARK: - UICollectionViewDataSource
+
+extension ChatController {
+
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        return 5
+    }
+
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        guard
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: NSStringFromClass(ChatMessageCell.self),
+                for: indexPath
+            ) as? ChatMessageCell
+        else {
+            fatalError("Could not instantiate ChatMessageCell")
+        }
+
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension ChatController: UICollectionViewDelegateFlowLayout {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        return CGSize(width: view.frame.width, height: 50)
     }
 
 }
