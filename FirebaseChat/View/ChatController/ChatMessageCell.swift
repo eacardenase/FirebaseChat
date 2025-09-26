@@ -17,6 +17,9 @@ class ChatMessageCell: UICollectionViewCell {
         }
     }
 
+    var bubbleLeadingAnchor = NSLayoutConstraint()
+    var bubbleTrailingAnchor = NSLayoutConstraint()
+
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -99,17 +102,26 @@ extension ChatMessageCell {
             profileImageHeightAnchor.constant / 2
 
         // bubbleContainer
+
+        bubbleTrailingAnchor = bubbleContainer.trailingAnchor.constraint(
+            equalTo: contentView.trailingAnchor,
+            constant: -12
+        )
+        bubbleLeadingAnchor = bubbleContainer.leadingAnchor.constraint(
+            equalTo: profileImageView.trailingAnchor,
+            constant: 12
+        )
+
+        let bubbleWidthAnchor = bubbleContainer.widthAnchor.constraint(
+            lessThanOrEqualToConstant: 250
+        )
+        bubbleWidthAnchor.priority = UILayoutPriority(900)
+
         NSLayoutConstraint.activate([
             bubbleContainer.topAnchor.constraint(
                 equalTo: contentView.topAnchor
             ),
-            bubbleContainer.leadingAnchor.constraint(
-                equalTo: profileImageView.trailingAnchor,
-                constant: 12
-            ),
-            bubbleContainer.widthAnchor.constraint(
-                lessThanOrEqualToConstant: 250
-            ),
+            bubbleWidthAnchor,
         ])
 
         bubbleContainer.layer.cornerRadius = 12
@@ -144,6 +156,11 @@ extension ChatMessageCell {
 
         textView.text = message.text
         textView.textColor = viewModel.messageTextColor
+
+        bubbleLeadingAnchor.isActive = viewModel.leadingAnchorActive
+        bubbleTrailingAnchor.isActive = viewModel.trailingAnchorActive
+
+        profileImageView.isHidden = viewModel.shouldHideProfileImage
     }
 
 }
