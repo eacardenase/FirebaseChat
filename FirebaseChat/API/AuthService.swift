@@ -108,10 +108,18 @@ struct AuthService {
         }
     }
 
+    static var currentUserId: String? {
+        guard let currentUser = Auth.auth().currentUser else {
+            return nil
+        }
+
+        return currentUser.uid
+    }
+
     static func verifyLogin(
         completion: @escaping (NetworkingError?) -> Void
     ) {
-        guard Auth.auth().currentUser != nil else {
+        guard AuthService.currentUserId != nil else {
             completion(
                 .serverError("Failed to get user, current user is nil.")
             )

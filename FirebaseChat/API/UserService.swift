@@ -16,7 +16,8 @@ struct UserService {
         withId userId: String,
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
-        Firestore.firestore().collection("users").document(userId).getDocument {
+        Constants.FirebaseFirestore.UsersCollection.document(userId).getDocument
+        {
             snapshot,
             error in
 
@@ -47,7 +48,7 @@ struct UserService {
     static func fetchUsers(
         completion: @escaping (Result<[User], NetworkingError>) -> Void
     ) {
-        Firestore.firestore().collection("users").getDocuments {
+        Constants.FirebaseFirestore.UsersCollection.getDocuments {
             snapshot,
             error in
             if let error {
@@ -84,7 +85,7 @@ struct UserService {
     ) {
         let user = User(uid: uid, dictionary: data)
 
-        Firestore.firestore().collection("users").document(uid)
+        Constants.FirebaseFirestore.UsersCollection.document(uid)
             .setData(
                 data
             ) { error in

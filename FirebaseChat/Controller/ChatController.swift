@@ -162,18 +162,17 @@ extension ChatController: CustomInputAccessoryViewDelegate {
         _ inputView: CustomInputAccessoryView,
         wantsToSend message: String
     ) {
-        inputView.messageInputTextView.text = nil
+        ChatService.uploadMessage(message, to: user) { error in
+            if let error {
+                print(
+                    "DEBUG: Failed to upload message with error: \(error.localizedDescription)"
+                )
 
-        fromCurrentUser.toggle()
+                return
+            }
 
-        let newMessage = Message(
-            text: message,
-            isFromCurrentUser: fromCurrentUser
-        )
-
-        messages.append(newMessage)
-
-        collectionView.reloadData()
+            inputView.messageInputTextView.text = nil
+        }
     }
 
 }
