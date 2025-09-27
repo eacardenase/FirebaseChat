@@ -25,7 +25,7 @@ struct Message {
         self.timestamp =
             dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
 
-        self.isFromCurrentUser = fromId == AuthService.currentUserId
+        self.isFromCurrentUser = fromId == AuthService.currentUser?.uid
     }
 
 }

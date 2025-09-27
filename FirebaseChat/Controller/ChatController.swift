@@ -97,7 +97,7 @@ extension ChatController {
 extension ChatController {
 
     @objc func dismissKeyboard(_ sender: UITapGestureRecognizer) {
-        customInputView.messageInputTextView.resignFirstResponder()
+        customInputView.endEditing(true)
     }
 
 }
@@ -162,6 +162,8 @@ extension ChatController: CustomInputAccessoryViewDelegate {
         _ inputView: CustomInputAccessoryView,
         wantsToSend message: String
     ) {
+        inputView.clearMessageText()
+
         ChatService.uploadMessage(message, to: user) { error in
             if let error {
                 print(
@@ -170,8 +172,6 @@ extension ChatController: CustomInputAccessoryViewDelegate {
 
                 return
             }
-
-            inputView.messageInputTextView.text = nil
         }
     }
 

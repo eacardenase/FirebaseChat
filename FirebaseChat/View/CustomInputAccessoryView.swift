@@ -22,7 +22,7 @@ class CustomInputAccessoryView: UIView {
 
     weak var delegate: CustomInputAccessoryViewDelegate?
 
-    let messageInputTextView: UITextView = {
+    private let messageInputTextView: UITextView = {
         let textView = UITextView()
 
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -93,6 +93,13 @@ class CustomInputAccessoryView: UIView {
         return CGSize(width: UIView.noIntrinsicMetric, height: 50)
     }
 
+    @discardableResult
+    override func endEditing(_ force: Bool) -> Bool {
+        messageInputTextView.resignFirstResponder()
+
+        return super.endEditing(force)
+    }
+
 }
 
 // MARK: - Helpers
@@ -152,6 +159,11 @@ extension CustomInputAccessoryView {
         layer.shadowOffset = CGSize(width: 0, height: -8)
         layer.shadowOpacity = 0.25
         layer.shadowRadius = 8
+    }
+
+    func clearMessageText() {
+        messageInputTextView.text = nil
+        placeholderLabel.isHidden = false
     }
 
 }

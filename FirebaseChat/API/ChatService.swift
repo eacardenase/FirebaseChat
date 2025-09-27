@@ -15,22 +15,20 @@ struct ChatService {
         to user: User,
         completion: @escaping (Error?) -> Void
     ) {
-        guard let currentUid = AuthService.currentUserId else { return }
+        guard let currentUserUid = AuthService.currentUser?.uid else { return }
 
         let data: [String: Any] = [
             "text": message,
-            "fromId": currentUid,
+            "fromId": currentUserUid,
             "toId": user.uid,
             "timestamp": Timestamp(),
         ]
 
-        Constants.FirebaseFirestore.MessagesCollection.document(currentUid)
+        Constants.FirebaseFirestore.MessagesCollection.document(currentUserUid)
             .collection(user.uid).addDocument(
                 data: data
             ) { error in
                 if let error {
-                    print("DEBUG: \(error.localizedDescription)")
-
                     completion(error)
 
                     return
@@ -38,12 +36,10 @@ struct ChatService {
 
                 Constants.FirebaseFirestore.MessagesCollection.document(
                     user.uid
-                ).collection(currentUid).addDocument(
+                ).collection(currentUserUid).addDocument(
                     data: data
                 ) { error in
                     if let error {
-                        print("DEBUG: \(error.localizedDescription)")
-
                         completion(error)
 
                         return

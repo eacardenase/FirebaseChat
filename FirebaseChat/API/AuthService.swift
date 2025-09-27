@@ -108,18 +108,14 @@ struct AuthService {
         }
     }
 
-    static var currentUserId: String? {
-        guard let currentUser = Auth.auth().currentUser else {
-            return nil
-        }
-
-        return currentUser.uid
+    static var currentUser: FirebaseAuth.User? {
+        return Auth.auth().currentUser
     }
 
     static func verifyLogin(
         completion: @escaping (NetworkingError?) -> Void
     ) {
-        guard AuthService.currentUserId != nil else {
+        guard Auth.auth().currentUser != nil else {
             completion(
                 .serverError("Failed to get user, current user is nil.")
             )
