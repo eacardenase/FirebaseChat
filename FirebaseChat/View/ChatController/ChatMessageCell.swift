@@ -161,6 +161,7 @@ extension ChatMessageCell {
         bubbleTrailingAnchor.isActive = viewModel.trailingAnchorActive
 
         profileImageView.isHidden = viewModel.shouldHideProfileImage
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 
 }
