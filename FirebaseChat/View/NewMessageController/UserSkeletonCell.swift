@@ -86,6 +86,8 @@ extension UserSkeletonCell: SkeletonLoadable {
 extension UserSkeletonCell {
 
     private func setupViews() {
+        backgroundColor = .white
+
         let stackView = UIStackView(arrangedSubviews: [
             usernameLabel,
             fullnameLabel,

@@ -30,6 +30,8 @@ class CustomInputAccessoryView: UIView {
         textView.isScrollEnabled = false
         textView.tintColor = .systemPurple
         textView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        textView.backgroundColor = .white
+        textView.textColor = .black
 
         return textView
     }()

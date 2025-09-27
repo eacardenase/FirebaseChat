@@ -50,4 +50,30 @@ struct ChatService {
             }
     }
 
+    static func fetchMessages(
+        for user: User,
+        completion: @escaping ([Message]) -> Void
+    ) {
+        var messages = [Message]()
+
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        let query = Constants.FirebaseFirestore.MessagesCollection.document(
+            currentUserId
+        ).collection(user.uid).order(by: "timestamp")
+
+        query.addSnapshotListener { snapshot, error in
+            snapshot?.documentChanges.forEach { change in
+                if change.type == .added {
+                    let dictionary = change.document.data()
+                    let newMessage = Message(dictionary: dictionary)
+
+                    messages.append(newMessage)
+                }
+            }
+
+            completion(messages)
+        }
+    }
+
 }

@@ -33,6 +33,7 @@ class UserCell: UITableViewCell {
         let label = UILabel()
 
         label.font = .preferredFont(forTextStyle: .headline)
+        label.textColor = .black
 
         return label
     }()
@@ -65,6 +66,8 @@ class UserCell: UITableViewCell {
 extension UserCell {
 
     private func setupViews() {
+        backgroundColor = .white
+
         let stackView = UIStackView(arrangedSubviews: [
             usernameLabel,
             fullnameLabel,

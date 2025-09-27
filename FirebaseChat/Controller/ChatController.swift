@@ -49,6 +49,7 @@ class ChatController: UICollectionViewController {
         super.viewDidLoad()
 
         setupViews()
+        fetchMessages()
 
         collectionView.alwaysBounceVertical = true
         collectionView.register(
@@ -172,6 +173,20 @@ extension ChatController: CustomInputAccessoryViewDelegate {
 
                 return
             }
+        }
+    }
+
+}
+
+// MARK: - API
+
+extension ChatController {
+
+    func fetchMessages() {
+        ChatService.fetchMessages(for: user) { messages in
+            self.messages = messages
+
+            self.collectionView.reloadData()
         }
     }
 
