@@ -51,6 +51,7 @@ class ChatController: UICollectionViewController {
         setupViews()
         fetchMessages()
 
+        collectionView.keyboardDismissMode = .interactive
         collectionView.alwaysBounceVertical = true
         collectionView.register(
             ChatMessageCell.self,
