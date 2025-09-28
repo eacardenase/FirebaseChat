@@ -121,6 +121,9 @@ extension ChatMessageCell {
             bubbleContainer.topAnchor.constraint(
                 equalTo: contentView.topAnchor
             ),
+            bubbleContainer.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor
+            ),
             bubbleWidthAnchor,
         ])
 
