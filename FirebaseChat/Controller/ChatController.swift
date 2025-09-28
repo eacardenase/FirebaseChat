@@ -198,8 +198,14 @@ extension ChatController {
     func fetchMessages() {
         ChatService.fetchMessages(for: user) { messages in
             self.messages = messages
+            let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
 
             self.collectionView.reloadData()
+            self.collectionView.scrollToItem(
+                at: indexPath,
+                at: .bottom,
+                animated: true
+            )
         }
     }
 
