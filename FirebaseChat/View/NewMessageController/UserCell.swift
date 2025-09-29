@@ -123,7 +123,15 @@ extension UserCell {
     private func configure() {
         guard let user else { return }
 
-        usernameLabel.text = user.username
+        var username = user.username
+
+        if let currentUser = AuthService.currentUser,
+            currentUser.uid == user.uid
+        {
+            username.append(" (You)")
+        }
+
+        usernameLabel.text = username
         fullnameLabel.text = user.fullname
 
         guard let url = URL(string: user.profileImageUrl) else { return }

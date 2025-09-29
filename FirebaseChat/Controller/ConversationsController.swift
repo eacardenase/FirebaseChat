@@ -11,7 +11,7 @@ class ConversationsController: UIViewController {
 
     // MARK: - Properties
 
-    private var resentMessages = [Message]()
+    private var recentMessages = [Message]()
 
     private lazy var tableView: UITableView = {
         let _tableView = UITableView()
@@ -186,7 +186,7 @@ extension ConversationsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int)
         -> Int
     {
-        return resentMessages.count
+        return recentMessages.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
@@ -197,7 +197,7 @@ extension ConversationsController: UITableViewDataSource {
             for: indexPath
         )
 
-        cell.textLabel?.text = resentMessages[indexPath.row].text
+        cell.textLabel?.text = recentMessages[indexPath.row].text
         cell.selectionStyle = .none
 
         return cell
@@ -213,7 +213,11 @@ extension ConversationsController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        print(indexPath.row)
+        let user = recentMessages[indexPath.row].user
+
+        let controller = ChatController(user: user)
+
+        navigationController?.pushViewController(controller, animated: true)
     }
 
 }
@@ -236,7 +240,9 @@ extension ConversationsController {
         ChatService.fetchRecentMessages { result in
             switch result {
             case .success(let recentMessages):
-                self.resentMessages = recentMessages
+                print(recentMessages)
+
+                self.recentMessages = recentMessages
 
                 self.tableView.reloadData()
             case .failure(let error):

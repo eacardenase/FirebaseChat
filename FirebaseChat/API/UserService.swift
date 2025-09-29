@@ -39,7 +39,7 @@ struct UserService {
                 return
             }
 
-            let user = User(uid: userId, dictionary: userData)
+            let user = User(dictionary: userData)
 
             completion(.success(user))
         }
@@ -69,7 +69,6 @@ struct UserService {
 
             let users = snapshot.documents.map { document in
                 return User(
-                    uid: document.documentID,
                     dictionary: document.data()
                 )
             }
@@ -83,7 +82,7 @@ struct UserService {
         data: [String: String],
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
-        let user = User(uid: uid, dictionary: data)
+        let user = User(dictionary: data)
 
         Constants.FirebaseFirestore.UsersCollection.document(uid)
             .setData(

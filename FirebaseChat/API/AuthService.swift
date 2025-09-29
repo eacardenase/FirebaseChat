@@ -88,6 +88,7 @@ struct AuthService {
                 switch result {
                 case .success(let profileImageUrl):
                     let userData = [
+                        "uid": uid,
                         "fullname": credentials.fullname,
                         "username": credentials.username,
                         "email": credentials.email,

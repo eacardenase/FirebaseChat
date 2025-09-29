@@ -17,11 +17,10 @@ struct ChatService {
     ) {
         guard let currentUserUid = AuthService.currentUser?.uid else { return }
 
-        var data: [String: Any] = [
+        let data: [String: Any] = [
             "text": message,
-            "fromId": currentUserUid,
-            "toId": user.uid,
             "timestamp": Timestamp(),
+            "user": user.toDictionary(),
         ]
 
         Constants.FirebaseFirestore.MessagesCollection.document(currentUserUid)
@@ -38,20 +37,10 @@ struct ChatService {
                     Constants.FirebaseFirestore.MessagesCollection.document(
                         user.uid
                     ).collection(currentUserUid).addDocument(
-                        data: data
-                    ) { error in
-                        if let error {
-                            completion(error)
-
-                            return
-                        }
-
-                        completion(nil)
-                    }
+                        data: data,
+                        completion: completion
+                    )
                 }
-
-                data["profileImageUrl"] = user.profileImageUrl
-                data["username"] = user.username
 
                 Constants.FirebaseFirestore.MessagesCollection.document(
                     currentUserUid
