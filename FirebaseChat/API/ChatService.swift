@@ -47,6 +47,15 @@ struct ChatService {
 
                     completion(nil)
                 }
+
+                Constants.FirebaseFirestore.MessagesCollection.document(
+                    currentUserUid
+                ).collection("recent_messages").document(user.uid).setData(data)
+
+                Constants.FirebaseFirestore.MessagesCollection.document(
+                    user.uid
+                ).collection("recent_messages").document(currentUserUid)
+                    .setData(data)
             }
     }
 
@@ -73,6 +82,51 @@ struct ChatService {
             }
 
             completion(messages)
+        }
+    }
+
+    static func fetchRecentMessages(
+        completion: @escaping (Result<[Message], NetworkingError>) -> Void
+    ) {
+        var recentMessages = [Message]()
+
+        guard let currentUserId = AuthService.currentUser?.uid else {
+            return
+        }
+
+        let query = Constants.FirebaseFirestore.MessagesCollection.document(
+            currentUserId
+        ).collection("recent_messages").order(by: "timestamp")
+
+        query.addSnapshotListener { snapshot, error in
+            if let error {
+                completion(.failure(.serverError(error.localizedDescription)))
+
+                return
+            }
+
+            guard let snapshot else {
+                completion(
+                    .failure(.serverError("Error getting conversations."))
+                )
+
+                return
+            }
+
+            snapshot.documentChanges.forEach { change in
+                let dictionary = change.document.data()
+                var message = Message(dictionary: dictionary)
+
+                UserService.fetchUser(withId: message.toId) { result in
+                    if case .success(let user) = result {
+                        message.user = user
+
+                        recentMessages.append(message)
+                    }
+
+                    completion(.success(recentMessages))
+                }
+            }
         }
     }
 

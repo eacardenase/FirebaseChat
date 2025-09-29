@@ -11,6 +11,8 @@ class ConversationsController: UIViewController {
 
     // MARK: - Properties
 
+    private var resentMessages = [Message]()
+
     private lazy var tableView: UITableView = {
         let _tableView = UITableView()
 
@@ -56,6 +58,7 @@ class ConversationsController: UIViewController {
         setupNavBar()
         setupViews()
         authenticateUser()
+        fetchConversations()
     }
 
     override func viewDidLayoutSubviews() {
@@ -183,7 +186,7 @@ extension ConversationsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int)
         -> Int
     {
-        return 2
+        return resentMessages.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
@@ -194,6 +197,7 @@ extension ConversationsController: UITableViewDataSource {
             for: indexPath
         )
 
+        cell.textLabel?.text = resentMessages[indexPath.row].text
         cell.selectionStyle = .none
 
         return cell
@@ -224,6 +228,21 @@ extension ConversationsController {
                 print("DEBUG: Unable to verify login with error: \(message)")
 
                 self.presentLoginScreen()
+            }
+        }
+    }
+
+    func fetchConversations() {
+        ChatService.fetchRecentMessages { result in
+            switch result {
+            case .success(let conversations):
+                self.resentMessages = conversations
+
+                self.tableView.reloadData()
+            case .failure(let error):
+                print(
+                    "DEBUG: Failed to fetch conversations with error: \(error.localizedDescription)"
+                )
             }
         }
     }
