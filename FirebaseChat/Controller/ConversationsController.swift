@@ -235,8 +235,8 @@ extension ConversationsController {
     func fetchConversations() {
         ChatService.fetchRecentMessages { result in
             switch result {
-            case .success(let conversations):
-                self.resentMessages = conversations
+            case .success(let recentMessages):
+                self.resentMessages = recentMessages
 
                 self.tableView.reloadData()
             case .failure(let error):

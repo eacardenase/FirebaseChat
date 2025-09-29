@@ -17,7 +17,7 @@ struct ChatService {
     ) {
         guard let currentUserUid = AuthService.currentUser?.uid else { return }
 
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "text": message,
             "fromId": currentUserUid,
             "toId": user.uid,
@@ -34,19 +34,24 @@ struct ChatService {
                     return
                 }
 
-                Constants.FirebaseFirestore.MessagesCollection.document(
-                    user.uid
-                ).collection(currentUserUid).addDocument(
-                    data: data
-                ) { error in
-                    if let error {
-                        completion(error)
+                if currentUserUid != user.uid {
+                    Constants.FirebaseFirestore.MessagesCollection.document(
+                        user.uid
+                    ).collection(currentUserUid).addDocument(
+                        data: data
+                    ) { error in
+                        if let error {
+                            completion(error)
 
-                        return
+                            return
+                        }
+
+                        completion(nil)
                     }
-
-                    completion(nil)
                 }
+
+                data["profileImageUrl"] = user.profileImageUrl
+                data["username"] = user.username
 
                 Constants.FirebaseFirestore.MessagesCollection.document(
                     currentUserUid
@@ -115,18 +120,12 @@ struct ChatService {
 
             snapshot.documentChanges.forEach { change in
                 let dictionary = change.document.data()
-                var message = Message(dictionary: dictionary)
+                let message = Message(dictionary: dictionary)
 
-                UserService.fetchUser(withId: message.toId) { result in
-                    if case .success(let user) = result {
-                        message.user = user
-
-                        recentMessages.append(message)
-                    }
-
-                    completion(.success(recentMessages))
-                }
+                recentMessages.append(message)
             }
+
+            completion(.success(recentMessages))
         }
     }
 
