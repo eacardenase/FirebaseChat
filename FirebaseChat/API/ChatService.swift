@@ -19,8 +19,9 @@ struct ChatService {
 
         let data: [String: Any] = [
             "text": message,
+            "fromId": currentUserUid,
+            "toId": user.uid,
             "timestamp": Timestamp(),
-            "user": user.toDictionary(),
         ]
 
         Constants.FirebaseFirestore.MessagesCollection.document(currentUserUid)
@@ -109,12 +110,17 @@ struct ChatService {
 
             snapshot.documentChanges.forEach { change in
                 let dictionary = change.document.data()
-                let message = Message(dictionary: dictionary)
+                var message = Message(dictionary: dictionary)
 
-                recentMessages.append(message)
+                UserService.fetchUser(withId: message.toId) { result in
+                    if case .success(let user) = result {
+                        message.user = user
+
+                        recentMessages.append(message)
+                        completion(.success(recentMessages))
+                    }
+                }
             }
-
-            completion(.success(recentMessages))
         }
     }
 

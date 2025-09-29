@@ -11,19 +11,21 @@ import FirebaseCore
 struct Message {
 
     let text: String
+    let toId: String
+    let fromId: String
     let timestamp: Timestamp
+    var user: User?
+
     let isFromCurrentUser: Bool
-    let user: User
 
     init(dictionary: [String: Any]) {
-        let userData = dictionary["user"] as? [String: Any] ?? [:]
-
-        self.user = User(dictionary: userData)
         self.text = dictionary["text"] as? String ?? ""
+        self.toId = dictionary["toId"] as? String ?? ""
+        self.fromId = dictionary["fromId"] as? String ?? ""
         self.timestamp =
             dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
 
-        self.isFromCurrentUser = user.uid != AuthService.currentUser?.uid
+        self.isFromCurrentUser = fromId == AuthService.currentUser?.uid
     }
 
 }

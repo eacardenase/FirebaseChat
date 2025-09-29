@@ -15,28 +15,17 @@ struct User {
     let email: String
     let profileImageUrl: String
 
-    init(dictionary: [String: Any]) {
-        self.uid = dictionary["uid"] as? String ?? ""
+    init(uid: String, dictionary: [String: Any]) {
+        self.uid = uid
+
         self.fullname = dictionary["fullname"] as? String ?? ""
         self.username = dictionary["username"] as? String ?? ""
         self.email = dictionary["email"] as? String ?? ""
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
     }
 
-    func toDictionary() -> [String: Any] {
-        let dictionary: [String: Any] = [
-            "uid": uid,
-            "fullname": fullname,
-            "username": username,
-            "email": email,
-            "profileImageUrl": profileImageUrl
-        ]
-
-        return dictionary
-    }
-
     static func makeSkeletion() -> User {
-        return User(dictionary: [:])
+        return User(uid: "1", dictionary: [:])
     }
 
 }

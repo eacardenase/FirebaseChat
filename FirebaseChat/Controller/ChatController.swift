@@ -128,7 +128,10 @@ extension ChatController {
             fatalError("Could not instantiate ChatMessageCell")
         }
 
-        cell.message = messages[indexPath.row]
+        var message = messages[indexPath.row]
+        message.user = user
+
+        cell.message = message
 
         return cell
     }

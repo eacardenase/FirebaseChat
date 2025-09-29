@@ -32,7 +32,7 @@ struct MessageViewModel {
     }
 
     var profileImageUrl: URL? {
-        let user = message.user
+        guard let user = message.user else { return nil }
 
         return URL(string: user.profileImageUrl)
     }

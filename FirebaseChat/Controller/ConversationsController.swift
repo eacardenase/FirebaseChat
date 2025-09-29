@@ -126,6 +126,8 @@ extension ConversationsController {
     private func logout() {
         showLoader()
 
+        recentMessages = []
+
         AuthService.logUserOut { error in
             self.showLoader(false)
 
@@ -213,7 +215,7 @@ extension ConversationsController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        let user = recentMessages[indexPath.row].user
+        guard let user = recentMessages[indexPath.row].user else { return }
 
         let controller = ChatController(user: user)
 
@@ -240,8 +242,6 @@ extension ConversationsController {
         ChatService.fetchRecentMessages { result in
             switch result {
             case .success(let recentMessages):
-                print(recentMessages)
-
                 self.recentMessages = recentMessages
 
                 self.tableView.reloadData()
