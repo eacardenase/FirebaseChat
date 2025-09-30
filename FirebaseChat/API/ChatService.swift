@@ -81,9 +81,10 @@ struct ChatService {
     }
 
     static func fetchRecentMessages(
-        completion: @escaping (Result<[Message], NetworkingError>) -> Void
+        completion: @escaping (Result<[String: Message], NetworkingError>) ->
+            Void
     ) {
-        var recentMessages = [Message]()
+        var recentMessages: [String: Message] = [:]
 
         guard let currentUserId = AuthService.currentUser?.uid else {
             return
@@ -116,7 +117,8 @@ struct ChatService {
                     if case .success(let user) = result {
                         message.user = user
 
-                        recentMessages.append(message)
+                        recentMessages[user.uid] = message
+
                         completion(.success(recentMessages))
                     }
                 }

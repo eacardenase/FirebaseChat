@@ -249,7 +249,7 @@ extension ConversationsController {
         ChatService.fetchRecentMessages { result in
             switch result {
             case .success(let recentMessages):
-                self.recentMessages = recentMessages
+                self.recentMessages = Array(recentMessages.values)
 
                 self.tableView.reloadData()
             case .failure(let error):
