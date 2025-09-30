@@ -17,12 +17,11 @@ class ConversationsController: UIViewController {
         let _tableView = UITableView()
 
         _tableView.backgroundColor = .white
-        _tableView.rowHeight = 80
         _tableView.dataSource = self
         _tableView.delegate = self
         _tableView.register(
-            UITableViewCell.self,
-            forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self)
+            ConversationCell.self,
+            forCellReuseIdentifier: NSStringFromClass(ConversationCell.self)
         )
 
         return _tableView
@@ -141,6 +140,12 @@ extension ConversationsController {
         }
     }
 
+    private func showChatController(for user: User) {
+        let controller = ChatController(user: user)
+
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
 }
 
 // MARK: - Actions
@@ -194,12 +199,16 @@ extension ConversationsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
         -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: UITableViewCell.self),
-            for: indexPath
-        )
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(ConversationCell.self),
+                for: indexPath
+            ) as? ConversationCell
+        else {
+            fatalError("Could not create ConversationCell cell")
+        }
 
-        cell.textLabel?.text = recentMessages[indexPath.row].text
+        cell.conversation = recentMessages[indexPath.row]
         cell.selectionStyle = .none
 
         return cell
@@ -217,9 +226,7 @@ extension ConversationsController: UITableViewDelegate {
     ) {
         guard let user = recentMessages[indexPath.row].user else { return }
 
-        let controller = ChatController(user: user)
-
-        navigationController?.pushViewController(controller, animated: true)
+        showChatController(for: user)
     }
 
 }
@@ -264,12 +271,7 @@ extension ConversationsController: NewMessageControllerDelegate {
         wantsToChatWith user: User
     ) {
         controller.dismiss(animated: true) {
-            let chatController = ChatController(user: user)
-
-            self.navigationController?.pushViewController(
-                chatController,
-                animated: true
-            )
+            self.showChatController(for: user)
         }
     }
 

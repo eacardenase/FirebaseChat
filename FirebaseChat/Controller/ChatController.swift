@@ -89,7 +89,15 @@ extension ChatController {
     private func setupViews() {
         collectionView.backgroundColor = .white
 
-        navigationItem.title = user.username
+        var username = user.username
+
+        if let currentUser = AuthService.currentUser,
+            currentUser.uid == user.uid
+        {
+            username.append(" (You)")
+        }
+
+        navigationItem.title = username
     }
 
 }
