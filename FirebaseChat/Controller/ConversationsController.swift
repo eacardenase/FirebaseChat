@@ -74,7 +74,10 @@ extension ConversationsController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Messages"
 
-        let profileImage = UIImage(systemName: "person.circle.fill")
+        let profileImage = UIImage(
+            systemName: "person.circle.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 20)
+        )
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: profileImage,

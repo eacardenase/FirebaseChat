@@ -7,9 +7,17 @@
 
 import UIKit
 
+protocol ProfileHeaderDelegate: AnyObject {
+
+    func dismissController()
+
+}
+
 class ProfileHeader: UIView {
 
     // MARK: - Properties
+
+    weak var delegate: ProfileHeaderDelegate?
 
     lazy var gradientLayer: CAGradientLayer = {
         let gradient = CAGradientLayer()
@@ -123,7 +131,7 @@ extension ProfileHeader {
         NSLayoutConstraint.activate([
             dismissButton.topAnchor.constraint(
                 equalTo: safeAreaLayoutGuide.topAnchor,
-                constant: 16
+                constant: 8
             ),
             dismissButton.leadingAnchor.constraint(
                 equalTo: safeAreaLayoutGuide.leadingAnchor,
@@ -169,7 +177,7 @@ extension ProfileHeader {
 extension ProfileHeader {
 
     @objc func dismissButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.dismissController()
     }
 
 }

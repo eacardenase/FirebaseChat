@@ -18,6 +18,8 @@ class ProfileController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        headerView.delegate = self
+
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.tableHeaderView = headerView
         tableView.register(
@@ -75,5 +77,15 @@ extension ProfileController {
 // MARK: - API
 
 extension ProfileController {
+
+}
+
+// MARK: - ProfileHeaderDelegate
+
+extension ProfileController: ProfileHeaderDelegate {
+
+    func dismissController() {
+        dismiss(animated: true)
+    }
 
 }
