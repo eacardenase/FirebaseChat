@@ -153,21 +153,14 @@ extension ConversationsController {
 extension ConversationsController {
 
     @objc func profileButtonTapped(_ sender: UIBarButtonItem) {
-        let alertController = UIAlertController(
-            title: nil,
-            message: nil,
-            preferredStyle: .actionSheet
+        let controller = ProfileController()
+        let navController = UINavigationController(
+            rootViewController: controller
         )
 
-        let logoutAction = UIAlertAction(title: "Log out", style: .destructive)
-        { _ in self.logout() }
+        navController.modalPresentationStyle = .fullScreen
 
-        alertController.addAction(logoutAction)
-        alertController.addAction(
-            UIAlertAction(title: "Cancel", style: .cancel)
-        )
-
-        present(alertController, animated: true)
+        present(navController, animated: true)
     }
 
     @objc func newMessageButtonTapped(_ sender: UIButton) {
