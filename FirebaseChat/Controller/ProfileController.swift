@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProfileControllerDelegate: ProfileFooterDelegate {
+
+}
+
 class ProfileController: UITableViewController {
 
     // MARK: - Properties
@@ -17,6 +21,8 @@ class ProfileController: UITableViewController {
         }
     }
 
+    weak var delegate: ProfileControllerDelegate?
+
     private let headerView = ProfileHeader()
     private let footerView = ProfileFooter()
 
@@ -26,6 +32,7 @@ class ProfileController: UITableViewController {
         super.viewDidLoad()
 
         headerView.delegate = self
+        footerView.delegate = self
 
         tableView.backgroundColor = .systemGroupedBackground
         tableView.contentInsetAdjustmentBehavior = .never
@@ -126,6 +133,36 @@ extension ProfileController: ProfileHeaderDelegate {
 
     func dismissController() {
         dismiss(animated: true)
+    }
+
+}
+
+// MARK: - ProfileFooterDelegate
+
+extension ProfileController: ProfileFooterDelegate {
+
+    func handleLogout() {
+        let alertController = UIAlertController(
+            title: nil,
+            message: "Are you sure you want to log out?",
+            preferredStyle: .actionSheet
+        )
+
+        let logoutAction = UIAlertAction(
+            title: "Log out",
+            style: .destructive
+        ) { _ in
+            self.dismiss(animated: true) {
+                self.delegate?.handleLogout()
+            }
+        }
+
+        alertController.addAction(logoutAction)
+        alertController.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
+
+        present(alertController, animated: true)
     }
 
 }

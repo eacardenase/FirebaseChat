@@ -157,6 +157,8 @@ extension ConversationsController {
 
     @objc func profileButtonTapped(_ sender: UIBarButtonItem) {
         let controller = ProfileController(style: .insetGrouped)
+        controller.delegate = self
+
         let navController = UINavigationController(
             rootViewController: controller
         )
@@ -269,6 +271,16 @@ extension ConversationsController: NewMessageControllerDelegate {
         controller.dismiss(animated: true) {
             self.showChatController(for: user)
         }
+    }
+
+}
+
+// MARK: - ProfileFooterDelegate
+
+extension ConversationsController: ProfileControllerDelegate {
+
+    func handleLogout() {
+        logout()
     }
 
 }

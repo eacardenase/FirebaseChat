@@ -7,9 +7,17 @@
 
 import UIKit
 
+protocol ProfileFooterDelegate: AnyObject {
+
+    func handleLogout()
+
+}
+
 class ProfileFooter: UIView {
 
     // MARK: - Properties
+
+    weak var delegate: ProfileFooterDelegate?
 
     private lazy var logoutButton: UIButton = {
         let button = UIButton(type: .system)
@@ -72,7 +80,7 @@ extension ProfileFooter {
 extension ProfileFooter {
 
     @objc func logoutButtonTapped(_ sender: UIButton) {
-        print(#function)
+        delegate?.handleLogout()
     }
 
 }
