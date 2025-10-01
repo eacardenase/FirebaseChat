@@ -17,6 +17,10 @@ class ProfileHeader: UIView {
 
     // MARK: - Properties
 
+    var user: User? {
+        didSet { configure() }
+    }
+
     weak var delegate: ProfileHeaderDelegate?
 
     lazy var gradientLayer: CAGradientLayer = {
@@ -72,7 +76,6 @@ class ProfileHeader: UIView {
         label.font = .preferredFont(forTextStyle: .headline)
         label.textAlignment = .center
         label.textColor = .white
-        label.text = "Edwin Cardenas"
 
         return label
     }()
@@ -84,7 +87,6 @@ class ProfileHeader: UIView {
         label.font = .preferredFont(forTextStyle: .subheadline)
         label.textColor = .white
         label.textAlignment = .center
-        label.text = "@eacardenase"
 
         return label
     }()
@@ -168,6 +170,18 @@ extension ProfileHeader {
                 constant: 16
             ),
         ])
+    }
+
+    private func configure() {
+        guard let user,
+            let url = URL(string: user.profileImageUrl)
+        else {
+            return
+        }
+
+        fullnameLabel.text = user.fullname
+        usernameLabel.text = "@\(user.username)"
+        profileImageView.sd_setImage(with: url)
     }
 
 }

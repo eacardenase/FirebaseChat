@@ -11,6 +11,12 @@ class ProfileController: UITableViewController {
 
     // MARK: - Properties
 
+    private var user: User? {
+        didSet {
+            headerView.user = user
+        }
+    }
+
     private let headerView = ProfileHeader()
 
     // MARK: - View Lifecycle
@@ -27,6 +33,7 @@ class ProfileController: UITableViewController {
             forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self)
         )
 
+        fetchUser()
         setupViews()
     }
 
@@ -77,6 +84,21 @@ extension ProfileController {
 // MARK: - API
 
 extension ProfileController {
+
+    func fetchUser() {
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        UserService.fetchUser(withId: currentUserId) { result in
+            switch result {
+            case .success(let user):
+                self.user = user
+            case .failure(let error):
+                print(
+                    "DEBUG: Failed to fetch user with error: \(error.localizedDescription)"
+                )
+            }
+        }
+    }
 
 }
 
