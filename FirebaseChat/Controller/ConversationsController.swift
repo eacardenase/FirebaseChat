@@ -156,7 +156,7 @@ extension ConversationsController {
 extension ConversationsController {
 
     @objc func profileButtonTapped(_ sender: UIBarButtonItem) {
-        let controller = ProfileController()
+        let controller = ProfileController(style: .insetGrouped)
         let navController = UINavigationController(
             rootViewController: controller
         )
