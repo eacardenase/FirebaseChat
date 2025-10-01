@@ -99,19 +99,19 @@ extension ProfileCell {
         NSLayoutConstraint.activate([
             iconImageView.topAnchor.constraint(
                 equalTo: iconView.topAnchor,
-                constant: 8
+                constant: 6
             ),
             iconImageView.leadingAnchor.constraint(
                 equalTo: iconView.leadingAnchor,
-                constant: 8
+                constant: 6
             ),
             iconImageView.trailingAnchor.constraint(
                 equalTo: iconView.trailingAnchor,
-                constant: -8
+                constant: -6
             ),
             iconImageView.bottomAnchor.constraint(
                 equalTo: iconView.bottomAnchor,
-                constant: -8
+                constant: -6
             ),
         ])
 
@@ -130,9 +130,12 @@ extension ProfileCell {
     private func configure() {
         guard let viewModel else { return }
 
+        let imageConf = UIImage.SymbolConfiguration(scale: .medium)
+
         titleLabel.text = viewModel.description
         iconImageView.image = UIImage(
             systemName: viewModel.iconImage,
+            withConfiguration: imageConf
         )
     }
 

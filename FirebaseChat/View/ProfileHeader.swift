@@ -26,7 +26,7 @@ class ProfileHeader: UIView {
     lazy var gradientLayer: CAGradientLayer = {
         let gradient = CAGradientLayer()
 
-        gradient.locations = [0, 1]
+        gradient.locations = [0.5, 1]
         gradient.colors = [
             UIColor.systemPurple.cgColor,
             UIColor.systemTeal.cgColor,
@@ -148,10 +148,7 @@ extension ProfileHeader {
         )
 
         NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(
-                equalTo: safeAreaLayoutGuide.topAnchor,
-                constant: 32
-            ),
+            profileImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             profileImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             profileImageHeightAnchor,
             profileImageView.widthAnchor.constraint(

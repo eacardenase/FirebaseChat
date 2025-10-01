@@ -18,6 +18,7 @@ class ProfileController: UITableViewController {
     }
 
     private let headerView = ProfileHeader()
+    private let footerView = ProfileFooter()
 
     // MARK: - View Lifecycle
 
@@ -29,6 +30,7 @@ class ProfileController: UITableViewController {
         tableView.backgroundColor = .systemGroupedBackground
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.tableHeaderView = headerView
+        tableView.tableFooterView = footerView
         tableView.register(
             ProfileCell.self,
             forCellReuseIdentifier: NSStringFromClass(ProfileCell.self)
