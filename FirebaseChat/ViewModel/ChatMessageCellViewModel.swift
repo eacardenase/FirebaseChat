@@ -1,5 +1,5 @@
 //
-//  MessageViewModel.swift
+//  ChatMessageCellViewModel.swift
 //  FirebaseChat
 //
 //  Created by Edwin Cardenas on 9/25/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct MessageViewModel {
+struct ChatMessageCellViewModel {
 
     private let message: Message
 

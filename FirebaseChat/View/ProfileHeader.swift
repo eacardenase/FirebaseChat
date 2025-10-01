@@ -173,14 +173,15 @@ extension ProfileHeader {
     }
 
     private func configure() {
-        guard let user,
-            let url = URL(string: user.profileImageUrl)
-        else {
-            return
-        }
+        guard let user else { return }
 
-        fullnameLabel.text = user.fullname
-        usernameLabel.text = "@\(user.username)"
+        let viewModel = ProfileHeaderViewModel(profile: user)
+
+        fullnameLabel.text = viewModel.fullname
+        usernameLabel.text = viewModel.username
+
+        guard let url = viewModel.profileImageUrl else { return }
+
         profileImageView.sd_setImage(with: url)
     }
 

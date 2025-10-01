@@ -153,7 +153,7 @@ extension ChatMessageCell {
     private func configure() {
         guard let message else { return }
 
-        let viewModel = MessageViewModel(message: message)
+        let viewModel = ChatMessageCellViewModel(message: message)
 
         bubbleContainer.backgroundColor = viewModel.messageBackgroundColor
 
