@@ -39,7 +39,7 @@ class ChatMessageCell: UICollectionViewCell {
         _textView.backgroundColor = .clear
         _textView.font = .systemFont(ofSize: 16)
         _textView.isScrollEnabled = false
-        _textView.isEditable = false
+        _textView.isUserInteractionEnabled = false
         _textView.clipsToBounds = true
 
         return _textView
