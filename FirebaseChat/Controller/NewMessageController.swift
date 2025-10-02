@@ -23,8 +23,31 @@ class NewMessageController: UITableViewController {
     weak var delegate: NewMessageControllerDelegate?
 
     var users = [User]()
+    var filteredUsers = [User]()
 
     var isLoaded = false
+
+    private var inSearchMode: Bool {
+        guard let text = searchController.searchBar.text,
+            !text.isEmpty
+        else {
+            return false
+        }
+
+        return searchController.isActive
+    }
+
+    private lazy var searchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: nil)
+
+        controller.searchBar.showsCancelButton = false
+        controller.obscuresBackgroundDuringPresentation = false
+        controller.searchBar.placeholder = "Search for a user"
+        controller.searchResultsUpdater = self
+        controller.searchBar.searchTextField.tintColor = .systemPurple
+
+        return controller
+    }()
 
     // MARK: View Lifecycle
 
@@ -53,6 +76,12 @@ class NewMessageController: UITableViewController {
 extension NewMessageController {
 
     private func setupNavBar() {
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+
+//        definesPresentationContext = false
+        definesPresentationContext = true
+
         navigationItem.title = "New Message"
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .cancel,
@@ -104,7 +133,7 @@ extension NewMessageController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return users.count
+        return inSearchMode ? filteredUsers.count : users.count
     }
 
     override func tableView(
@@ -129,7 +158,8 @@ extension NewMessageController {
             fatalError("Could not instantiate UserCell")
         }
 
-        cell.user = users[indexPath.row]
+        cell.user =
+            inSearchMode ? filteredUsers[indexPath.row] : users[indexPath.row]
         cell.selectionStyle = .none
 
         return cell
@@ -145,7 +175,8 @@ extension NewMessageController {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        let user = users[indexPath.row]
+        let user =
+            inSearchMode ? filteredUsers[indexPath.row] : users[indexPath.row]
 
         delegate?.controller(self, wantsToChatWith: user)
     }
@@ -164,6 +195,25 @@ extension NewMessageController {
                 self.reloadViews()
             }
         }
+    }
+
+}
+
+// MARK: - UISearchResultsUpdating
+
+extension NewMessageController: UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        guard
+            let searchText = searchController.searchBar.text?.lowercased()
+        else { return }
+
+        filteredUsers = users.filter { user in
+            return user.username.lowercased().contains(searchText)
+                || user.fullname.lowercased().contains(searchText)
+        }
+
+        self.tableView.reloadData()
     }
 
 }

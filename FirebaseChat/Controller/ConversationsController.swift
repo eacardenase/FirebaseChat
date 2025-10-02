@@ -268,7 +268,7 @@ extension ConversationsController: NewMessageControllerDelegate {
         _ controller: NewMessageController,
         wantsToChatWith user: User
     ) {
-        controller.dismiss(animated: true) {
+        self.dismiss(animated: true) {
             self.showChatController(for: user)
         }
     }
