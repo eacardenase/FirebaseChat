@@ -13,6 +13,12 @@ protocol AuthenticationControllerProtocol {
 
 }
 
+protocol AuthenticationDelegate: AnyObject {
+
+    func authenticationComplete()
+
+}
+
 protocol AuthenticationProtocol {
 
     var formIsValid: Bool { get }

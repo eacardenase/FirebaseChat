@@ -115,6 +115,8 @@ extension ConversationsController {
     private func presentLoginScreen() {
         OperationQueue.main.addOperation {
             let loginController = LoginController()
+            loginController.delegate = self
+
             let navController = UINavigationController(
                 rootViewController: loginController
             )
@@ -127,8 +129,6 @@ extension ConversationsController {
 
     private func logout() {
         showLoader()
-
-        recentMessages = []
 
         AuthService.logUserOut { error in
             self.showLoader(false)
@@ -281,6 +281,18 @@ extension ConversationsController: ProfileControllerDelegate {
 
     func handleLogout() {
         logout()
+    }
+
+}
+
+// MARK: - AuthenticationDelegate
+
+extension ConversationsController: AuthenticationDelegate {
+
+    func authenticationComplete() {
+        dismiss(animated: true)
+
+        fetchConversations()
     }
 
 }

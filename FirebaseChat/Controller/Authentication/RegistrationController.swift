@@ -11,6 +11,7 @@ class RegistrationController: UIViewController {
 
     // MARK: - Properties
 
+    weak var delegate: AuthenticationDelegate?
     private var viewModel = RegistrationViewModel()
     private var profileImage: UIImage?
 
@@ -316,7 +317,7 @@ extension RegistrationController {
         AuthService.createUser(credentials: credentials) { result in
             switch result {
             case .success:
-                self.dismiss(animated: true)
+                self.delegate?.authenticationComplete()
             case .failure(let error):
                 if case .serverError(let message) = error {
                     let alertController = UIAlertController(
