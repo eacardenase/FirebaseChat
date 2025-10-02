@@ -139,6 +139,9 @@ extension ConversationsController {
                 return
             }
 
+            self.recentMessages.removeAll()
+            self.tableView.reloadData()
+
             self.presentLoginScreen()
         }
     }
@@ -247,7 +250,9 @@ extension ConversationsController {
         ChatService.fetchRecentMessages { result in
             switch result {
             case .success(let recentMessages):
-                self.recentMessages = Array(recentMessages.values)
+                self.recentMessages = recentMessages.sorted(by: {
+                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                })
 
                 self.tableView.reloadData()
             case .failure(let error):

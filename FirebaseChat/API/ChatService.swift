@@ -64,7 +64,9 @@ struct ChatService {
 
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
             currentUserId
-        ).collection(user.uid).order(by: "timestamp")
+        ).collection(user.uid)
+            .limit(to: 50)
+            .order(by: "timestamp")
 
         query.addSnapshotListener { snapshot, error in
             snapshot?.documentChanges.forEach { change in
@@ -81,7 +83,7 @@ struct ChatService {
     }
 
     static func fetchRecentMessages(
-        completion: @escaping (Result<[String: Message], NetworkingError>) ->
+        completion: @escaping (Result<[Message], NetworkingError>) ->
             Void
     ) {
         var recentMessages: [String: Message] = [:]
@@ -92,7 +94,7 @@ struct ChatService {
 
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
             currentUserId
-        ).collection("recent_messages").order(by: "timestamp")
+        ).collection("recent_messages")
 
         query.addSnapshotListener { snapshot, error in
             if let error {
@@ -119,7 +121,9 @@ struct ChatService {
 
                         recentMessages[user.uid] = message
 
-                        completion(.success(recentMessages))
+                        completion(
+                            .success(Array(recentMessages.values))
+                        )
                     }
                 }
             }
