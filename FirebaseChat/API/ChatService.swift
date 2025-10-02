@@ -113,7 +113,7 @@ struct ChatService {
                 let dictionary = change.document.data()
                 var message = Message(dictionary: dictionary)
 
-                UserService.fetchUser(withId: message.toId) { result in
+                UserService.fetchUser(withId: message.chatPartnerId) { result in
                     if case .success(let user) = result {
                         message.user = user
 
