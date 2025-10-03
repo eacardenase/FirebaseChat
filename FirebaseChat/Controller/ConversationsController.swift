@@ -247,7 +247,11 @@ extension ConversationsController {
     }
 
     func fetchConversations() {
+        showLoader()
+
         ChatService.fetchRecentMessages { result in
+            self.showLoader(false)
+
             switch result {
             case .success(let recentMessages):
                 self.recentMessages = recentMessages.sorted(by: {

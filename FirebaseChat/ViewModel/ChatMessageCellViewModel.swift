@@ -19,6 +19,15 @@ struct ChatMessageCellViewModel {
         return message.isFromCurrentUser ? .black : .white
     }
 
+    var timestamp: String {
+        let date = message.timestamp.dateValue()
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.dateFormat = "hh:mm a"
+
+        return dateFormatter.string(from: date)
+    }
+
     var trailingAnchorActive: Bool {
         return message.isFromCurrentUser
     }

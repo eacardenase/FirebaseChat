@@ -42,6 +42,7 @@ class ConversationCell: UITableViewCell {
 
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .subheadline)
+        label.textColor = .black
 
         return label
     }()

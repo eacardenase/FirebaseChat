@@ -45,6 +45,16 @@ class ChatMessageCell: UICollectionViewCell {
         return _textView
     }()
 
+    private let timestampLabel: UILabel = {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .preferredFont(forTextStyle: .caption1)
+        label.textColor = .white
+
+        return label
+    }()
+
     private let bubbleContainer: UIView = {
         let view = UIView()
 
@@ -74,6 +84,7 @@ extension ChatMessageCell {
 
     private func setupViews() {
         bubbleContainer.addSubview(textView)
+        bubbleContainer.addSubview(timestampLabel)
 
         contentView.addSubview(profileImageView)
         contentView.addSubview(bubbleContainer)
@@ -143,9 +154,19 @@ extension ChatMessageCell {
                 equalTo: bubbleContainer.trailingAnchor,
                 constant: -12
             ),
-            textView.bottomAnchor.constraint(
+        ])
+
+        // timestampLabel
+        NSLayoutConstraint.activate([
+            timestampLabel.topAnchor.constraint(
+                equalTo: textView.bottomAnchor,
+            ),
+            timestampLabel.trailingAnchor.constraint(
+                equalTo: textView.trailingAnchor
+            ),
+            timestampLabel.bottomAnchor.constraint(
                 equalTo: bubbleContainer.bottomAnchor,
-                constant: -4
+                constant: -6
             ),
         ])
     }
@@ -159,6 +180,8 @@ extension ChatMessageCell {
 
         textView.text = message.text
         textView.textColor = viewModel.messageTextColor
+
+        timestampLabel.text = viewModel.timestamp
 
         bubbleLeadingAnchor.isActive = viewModel.leadingAnchorActive
         bubbleTrailingAnchor.isActive = viewModel.trailingAnchorActive
