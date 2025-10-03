@@ -89,6 +89,8 @@ struct ChatService {
         var recentMessages: [String: Message] = [:]
 
         guard let currentUserId = AuthService.currentUser?.uid else {
+            completion(.failure(.serverError("User not logged in.")))
+
             return
         }
 
@@ -116,13 +118,17 @@ struct ChatService {
                 var message = Message(dictionary: dictionary)
 
                 UserService.fetchUser(withId: message.chatPartnerId) { result in
-                    if case .success(let user) = result {
+                    switch result {
+                    case .success(let user):
                         message.user = user
-
                         recentMessages[user.uid] = message
 
                         completion(
                             .success(Array(recentMessages.values))
+                        )
+                    case .failure(let error):
+                        completion(
+                            .failure(.serverError(error.localizedDescription))
                         )
                     }
                 }
