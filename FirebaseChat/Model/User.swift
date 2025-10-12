@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct User {
+struct User: Codable {
 
     let uid: String
     let fullname: String
@@ -15,17 +15,14 @@ struct User {
     let email: String
     let profileImageUrl: String
 
-    init(uid: String, dictionary: [String: Any]) {
-        self.uid = uid
-
-        self.fullname = dictionary["fullname"] as? String ?? ""
-        self.username = dictionary["username"] as? String ?? ""
-        self.email = dictionary["email"] as? String ?? ""
-        self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
-    }
-
     static func makeSkeletion() -> User {
-        return User(uid: "1", dictionary: [:])
+        return User(
+            uid: "",
+            fullname: "",
+            username: "",
+            email: "",
+            profileImageUrl: ""
+        )
     }
 
 }

@@ -18,8 +18,7 @@ struct UserService {
     ) {
         Constants.FirebaseFirestore.UsersCollection.document(userId).getDocument
         {
-            snapshot,
-            error in
+            (snapshot, error) in
 
             if let error {
                 completion(
@@ -29,9 +28,7 @@ struct UserService {
                 return
             }
 
-            guard let snapshot, snapshot.exists,
-                let userData = snapshot.data()
-            else {
+            guard let snapshot, snapshot.exists else {
                 completion(
                     .failure(.serverError("Failed to get user data."))
                 )
@@ -39,9 +36,13 @@ struct UserService {
                 return
             }
 
-            let user = User(uid: userId, dictionary: userData)
+            do {
+                let user = try snapshot.data(as: User.self)
 
-            completion(.success(user))
+                completion(.success(user))
+            } catch {
+                completion(.failure(.decodingError))
+            }
         }
     }
 
@@ -49,8 +50,8 @@ struct UserService {
         completion: @escaping (Result<[User], NetworkingError>) -> Void
     ) {
         Constants.FirebaseFirestore.UsersCollection.getDocuments {
-            snapshot,
-            error in
+            (snapshot, error) in
+
             if let error {
                 completion(
                     .failure(.serverError(error.localizedDescription))
@@ -67,40 +68,28 @@ struct UserService {
                 return
             }
 
-            let users = snapshot.documents.map { document in
-                return User(
-                    uid: document.documentID,
-                    dictionary: document.data()
-                )
+            let users = snapshot.documents.compactMap { document in
+                return try? document.data(as: User.self)
             }
 
             completion(.success(users))
         }
     }
 
-    static func storeUser(
-        withId uid: String,
-        data: [String: String],
+    static func store(
+        _ user: User,
         completion: @escaping (Result<User, NetworkingError>) -> Void
     ) {
-        let user = User(uid: uid, dictionary: data)
+        do {
+            try Constants.FirebaseFirestore.UsersCollection.document(user.uid)
+                .setData(from: user)
 
-        Constants.FirebaseFirestore.UsersCollection.document(uid)
-            .setData(
-                data
-            ) { error in
-                if let error {
-                    completion(
-                        .failure(
-                            .serverError(error.localizedDescription)
-                        )
-                    )
-
-                    return
-                }
-
-                completion(.success(user))
-            }
+            completion(.success(user))
+        } catch {
+            completion(
+                .failure(.serverError(error.localizedDescription))
+            )
+        }
     }
 
 }

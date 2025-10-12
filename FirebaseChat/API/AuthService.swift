@@ -9,6 +9,7 @@ import FirebaseAuth
 import UIKit
 
 enum NetworkingError: Error {
+    case decodingError
     case serverError(String)
 }
 
@@ -85,19 +86,15 @@ struct AuthService {
             ) { result in
                 switch result {
                 case .success(let profileImageUrl):
-                    let userData = [
-                        "uid": uid,
-                        "fullname": credentials.fullname,
-                        "username": credentials.username,
-                        "email": credentials.email,
-                        "profileImageUrl": profileImageUrl,
-                    ]
-
-                    UserService.storeUser(
-                        withId: uid,
-                        data: userData,
-                        completion: completion
+                    let user = User(
+                        uid: uid,
+                        fullname: credentials.fullname,
+                        username: credentials.username,
+                        email: credentials.email,
+                        profileImageUrl: profileImageUrl
                     )
+
+                    UserService.store(user, completion: completion)
                 case .failure(let error):
                     completion(
                         .failure(.serverError(error.localizedDescription))
