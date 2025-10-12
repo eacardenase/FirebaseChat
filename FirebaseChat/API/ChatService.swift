@@ -58,8 +58,6 @@ struct ChatService {
         for user: User,
         completion: @escaping ([Message]) -> Void
     ) {
-        var messages = [Message]()
-
         guard let currentUserId = AuthService.currentUser?.uid else { return }
 
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
@@ -69,13 +67,17 @@ struct ChatService {
             .order(by: "timestamp")
 
         query.addSnapshotListener { snapshot, error in
-            snapshot?.documentChanges.forEach { change in
+            guard let snapshot else { return }
+
+            let messages = snapshot.documentChanges.compactMap { change in
                 if change.type == .added {
                     let dictionary = change.document.data()
                     let newMessage = Message(dictionary: dictionary)
 
-                    messages.append(newMessage)
+                    return newMessage
                 }
+
+                return nil
             }
 
             completion(messages)
@@ -83,7 +85,8 @@ struct ChatService {
     }
 
     static func fetchRecentMessages(
-        completion: @escaping (Result<[Message], NetworkingError>) ->
+        completion:
+            @escaping (Result<[Message], NetworkingError>) ->
             Void
     ) {
         var recentMessages: [String: Message] = [:]

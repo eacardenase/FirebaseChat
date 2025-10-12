@@ -61,9 +61,7 @@ struct AuthService {
         Auth.auth().createUser(
             withEmail: credentials.email,
             password: credentials.password
-        ) {
-            result,
-            error in
+        ) { (result, error) in
 
             if let error {
                 completion(
