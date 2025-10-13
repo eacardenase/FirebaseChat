@@ -11,15 +11,13 @@ struct ConversationViewModel {
 
     // MARK: - Properties
 
-    private let conversation: Message
+    private let conversation: Conversation
 
     var username: String? {
-        guard let user = conversation.user else { return nil }
-
-        var username = user.username
+        var username = conversation.user.username
 
         if let currentUser = AuthService.currentUser,
-            currentUser.uid == user.uid
+            currentUser.uid == conversation.user.uid
         {
             username.append(" (You)")
         }
@@ -28,17 +26,15 @@ struct ConversationViewModel {
     }
 
     var text: String {
-        return conversation.text
+        return conversation.message.text
     }
 
     var profileImageUrl: URL? {
-        guard let user = conversation.user else { return nil }
-
-        return URL(string: user.profileImageUrl)
+        return URL(string: conversation.user.profileImageUrl)
     }
 
     var timestamp: String {
-        let date = conversation.timestamp.dateValue()
+        let date = conversation.message.timestamp.dateValue()
         let dateFormatter = DateFormatter()
 
         dateFormatter.dateFormat = "hh:mm a"
@@ -48,7 +44,7 @@ struct ConversationViewModel {
 
     // MARK: - Initializers
 
-    init(conversation: Message) {
+    init(conversation: Conversation) {
         self.conversation = conversation
     }
 
