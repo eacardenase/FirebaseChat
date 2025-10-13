@@ -51,6 +51,7 @@ class ChatMessageCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .caption1)
         label.textColor = .white
+        label.textAlignment = .right
 
         return label
     }()
@@ -160,6 +161,9 @@ extension ChatMessageCell {
         NSLayoutConstraint.activate([
             timestampLabel.topAnchor.constraint(
                 equalTo: textView.bottomAnchor,
+            ),
+            timestampLabel.leadingAnchor.constraint(
+                equalTo: textView.leadingAnchor
             ),
             timestampLabel.trailingAnchor.constraint(
                 equalTo: textView.trailingAnchor
