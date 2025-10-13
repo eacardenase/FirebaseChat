@@ -40,11 +40,15 @@ class NewMessageController: UITableViewController {
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
 
-        controller.searchBar.showsCancelButton = false
         controller.obscuresBackgroundDuringPresentation = false
         controller.searchBar.placeholder = "Search for a user"
         controller.searchResultsUpdater = self
         controller.searchBar.searchTextField.tintColor = .systemPurple
+        controller.searchBar.searchTextField.addTarget(
+            self,
+            action: #selector(showCancelButton),
+            for: .touchUpInside
+        )
 
         return controller
     }()
@@ -79,7 +83,6 @@ extension NewMessageController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
 
-//        definesPresentationContext = false
         definesPresentationContext = true
 
         navigationItem.title = "New Message"
@@ -121,6 +124,10 @@ extension NewMessageController {
 
     @objc func dismissController(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
+    }
+
+    @objc func showCancelButton(_ sender: UISearchTextField) {
+        searchController.searchBar.showsCancelButton = true
     }
 
 }
