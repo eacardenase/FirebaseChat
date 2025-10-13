@@ -60,6 +60,8 @@ struct ChatService {
     ) {
         guard let currentUserId = AuthService.currentUser?.uid else { return }
 
+        var messages = [Message]()
+
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
             currentUserId
         ).collection(user.uid)
@@ -67,17 +69,13 @@ struct ChatService {
             .order(by: "timestamp")
 
         query.addSnapshotListener { snapshot, error in
-            guard let snapshot else { return }
-
-            let messages = snapshot.documentChanges.compactMap { change in
+            snapshot?.documentChanges.forEach { change in
                 if change.type == .added {
                     let dictionary = change.document.data()
                     let newMessage = Message(dictionary: dictionary)
 
-                    return newMessage
+                    messages.append(newMessage)
                 }
-
-                return nil
             }
 
             completion(messages)
