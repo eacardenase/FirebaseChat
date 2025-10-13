@@ -71,7 +71,6 @@ class ConversationsController: UIViewController {
 extension ConversationsController {
 
     private func setupNavBar() {
-        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Messages"
 
         let profileImage = UIImage(

@@ -115,7 +115,9 @@ struct ChatService {
                 do {
                     let message = try document.data(as: Message.self)
 
-                    UserService.fetchUser(withId: message.fromId) { result in
+                    UserService.fetchUser(withId: message.chatPartnerId) {
+                        result in
+
                         switch result {
                         case .success(let user):
                             let conversation = Conversation(

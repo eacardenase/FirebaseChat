@@ -16,7 +16,11 @@ struct Message: Codable {
     let timestamp: Timestamp
 
     var isFromCurrentUser: Bool {
-        return fromId != AuthService.currentUser?.uid
+        return fromId == AuthService.currentUser?.uid
+    }
+
+    var chatPartnerId: String {
+        return isFromCurrentUser ? toId : fromId
     }
 
 }

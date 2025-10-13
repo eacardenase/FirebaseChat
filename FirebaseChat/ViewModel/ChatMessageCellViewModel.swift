@@ -12,11 +12,11 @@ struct ChatMessageCellViewModel {
     private let message: Message
 
     var messageBackgroundColor: UIColor {
-        return message.isFromCurrentUser ? .lightGray : .systemPurple
+        return message.isFromCurrentUser ? .systemPurple : .lightGray
     }
 
     var messageTextColor: UIColor {
-        return message.isFromCurrentUser ? .black : .white
+        return message.isFromCurrentUser ? .white : .black
     }
 
     var timestamp: String {
@@ -29,15 +29,15 @@ struct ChatMessageCellViewModel {
     }
 
     var trailingAnchorActive: Bool {
-        return message.isFromCurrentUser
-    }
-
-    var leadingAnchorActive: Bool {
         return !message.isFromCurrentUser
     }
 
-    var shouldHideProfileImage: Bool {
+    var leadingAnchorActive: Bool {
         return message.isFromCurrentUser
+    }
+
+    var shouldHideProfileImage: Bool {
+        return !message.isFromCurrentUser
     }
 
     var profileImageUrl: URL? {
