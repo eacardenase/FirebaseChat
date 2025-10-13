@@ -10,48 +10,50 @@ import FirebaseFirestore
 
 struct ChatService {
 
-    static func uploadMessage(
-        _ message: String,
+    static func upload(
+        _ text: String,
         to user: User,
         completion: @escaping (Error?) -> Void
     ) {
         guard let currentUserUid = AuthService.currentUser?.uid else { return }
 
-        let data: [String: Any] = [
-            "text": message,
-            "fromId": currentUserUid,
-            "toId": user.uid,
-            "timestamp": Timestamp(),
-        ]
+        let message = Message(
+            text: text,
+            toId: currentUserUid,
+            fromId: user.uid,
+            timestamp: Timestamp()
+        )
 
-        Constants.FirebaseFirestore.MessagesCollection.document(currentUserUid)
-            .collection(user.uid).addDocument(
-                data: data
-            ) { error in
-                if let error {
-                    completion(error)
+        do {
+            try Constants
+                .FirebaseFirestore
+                .MessagesCollection
+                .document(currentUserUid)
+                .collection(user.uid)
+                .addDocument(from: message)
 
-                    return
-                }
-
-                if currentUserUid != user.uid {
-                    Constants.FirebaseFirestore.MessagesCollection.document(
-                        user.uid
-                    ).collection(currentUserUid).addDocument(
-                        data: data,
-                        completion: completion
-                    )
-                }
-
-                Constants.FirebaseFirestore.MessagesCollection.document(
-                    currentUserUid
-                ).collection("recent_messages").document(user.uid).setData(data)
-
-                Constants.FirebaseFirestore.MessagesCollection.document(
+            if currentUserUid != user.uid {
+                try Constants.FirebaseFirestore.MessagesCollection.document(
                     user.uid
-                ).collection("recent_messages").document(currentUserUid)
-                    .setData(data)
+                ).collection(currentUserUid).addDocument(
+                    from: message,
+                )
             }
+
+            try Constants.FirebaseFirestore.MessagesCollection.document(
+                currentUserUid
+            ).collection("recent_messages").document(user.uid).setData(
+                from: message
+            )
+
+            try Constants.FirebaseFirestore.MessagesCollection.document(
+                user.uid
+            ).collection("recent_messages").document(currentUserUid).setData(
+                from: message
+            )
+        } catch {
+            completion(error)
+        }
     }
 
     static func fetchMessages(
@@ -60,8 +62,6 @@ struct ChatService {
     ) {
         guard let currentUserId = AuthService.currentUser?.uid else { return }
 
-        var messages = [Message]()
-
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
             currentUserId
         ).collection(user.uid)
@@ -69,13 +69,12 @@ struct ChatService {
             .order(by: "timestamp")
 
         query.addSnapshotListener { snapshot, error in
-            snapshot?.documentChanges.forEach { change in
-                if change.type == .added {
-                    let dictionary = change.document.data()
-                    let newMessage = Message(dictionary: dictionary)
+            guard let documents = snapshot?.documents else {
+                return
+            }
 
-                    messages.append(newMessage)
-                }
+            let messages = documents.compactMap {
+                return try? $0.data(as: Message.self)
             }
 
             completion(messages)
@@ -87,8 +86,6 @@ struct ChatService {
             @escaping (Result<[Message], NetworkingError>) ->
             Void
     ) {
-        var recentMessages: [String: Message] = [:]
-
         guard let currentUserId = AuthService.currentUser?.uid else {
             completion(.failure(.serverError("User not logged in.")))
 
@@ -114,26 +111,11 @@ struct ChatService {
                 return
             }
 
-            snapshot.documentChanges.forEach { change in
-                let dictionary = change.document.data()
-                var message = Message(dictionary: dictionary)
-
-                UserService.fetchUser(withId: message.chatPartnerId) { result in
-                    switch result {
-                    case .success(let user):
-                        message.user = user
-                        recentMessages[user.uid] = message
-
-                        completion(
-                            .success(Array(recentMessages.values))
-                        )
-                    case .failure(let error):
-                        completion(
-                            .failure(.serverError(error.localizedDescription))
-                        )
-                    }
-                }
+            let messages = snapshot.documents.compactMap { document in
+                return try? document.data(as: Message.self)
             }
+
+            completion(.success(messages))
         }
     }
 

@@ -187,7 +187,7 @@ extension ChatController: CustomInputAccessoryViewDelegate {
     ) {
         inputView.clearMessageText()
 
-        ChatService.uploadMessage(message, to: user) { error in
+        ChatService.upload(message, to: user) { error in
             if let error {
                 print(
                     "DEBUG: Failed to upload message with error: \(error.localizedDescription)"
