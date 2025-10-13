@@ -15,4 +15,8 @@ struct Message: Codable {
     let fromId: String
     let timestamp: Timestamp
 
+    var isFromCurrentUser: Bool {
+        return fromId != AuthService.currentUser?.uid
+    }
+
 }

@@ -89,15 +89,7 @@ extension ChatController {
     private func setupViews() {
         collectionView.backgroundColor = .white
 
-        var username = user.username
-
-        if let currentUser = AuthService.currentUser,
-            currentUser.uid == user.uid
-        {
-            username.append(" (You)")
-        }
-
-        navigationItem.title = username
+        navigationItem.title = user.username
     }
 
 }
@@ -136,8 +128,7 @@ extension ChatController {
             fatalError("Could not instantiate ChatMessageCell")
         }
 
-        var message = messages[indexPath.row]
-        message.user = user
+        let message = messages[indexPath.row]
 
         cell.message = message
 

@@ -32,13 +32,11 @@ struct ChatService {
                 .collection(user.uid)
                 .addDocument(from: message)
 
-            if currentUserUid != user.uid {
-                try Constants.FirebaseFirestore.MessagesCollection.document(
-                    user.uid
-                ).collection(currentUserUid).addDocument(
-                    from: message,
-                )
-            }
+            try Constants.FirebaseFirestore.MessagesCollection.document(
+                user.uid
+            ).collection(currentUserUid).addDocument(
+                from: message,
+            )
 
             try Constants.FirebaseFirestore.MessagesCollection.document(
                 currentUserUid

@@ -49,7 +49,12 @@ struct UserService {
     static func fetchUsers(
         completion: @escaping (Result<[User], NetworkingError>) -> Void
     ) {
-        Constants.FirebaseFirestore.UsersCollection.getDocuments {
+        guard let currentUserId = AuthService.currentUser?.uid else { return }
+
+        Constants.FirebaseFirestore.UsersCollection.whereField(
+            "uid",
+            isNotEqualTo: currentUserId
+        ).getDocuments {
             (snapshot, error) in
 
             if let error {

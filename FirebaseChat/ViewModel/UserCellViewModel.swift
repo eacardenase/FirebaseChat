@@ -18,15 +18,7 @@ struct UserCellViewModel {
     }
 
     var username: String {
-        var username = user.username
-
-        if let currentUserId = AuthService.currentUser?.uid,
-            currentUserId == user.uid
-        {
-            username.append(" (You)")
-        }
-
-        return username
+        return user.username
     }
 
     // MARK: - Initializers

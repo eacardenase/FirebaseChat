@@ -14,15 +14,7 @@ struct ConversationViewModel {
     private let conversation: Conversation
 
     var username: String? {
-        var username = conversation.user.username
-
-        if let currentUser = AuthService.currentUser,
-            currentUser.uid == conversation.user.uid
-        {
-            username.append(" (You)")
-        }
-
-        return username
+        return conversation.user.username
     }
 
     var text: String {
