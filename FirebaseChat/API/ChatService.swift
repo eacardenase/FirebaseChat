@@ -83,7 +83,7 @@ struct ChatService {
 
     static func fetchRecentMessages(
         completion:
-            @escaping (Result<[Message], NetworkingError>) ->
+            @escaping (Result<[Conversation], NetworkingError>) ->
             Void
     ) {
         guard let currentUserId = AuthService.currentUser?.uid else {
@@ -91,6 +91,8 @@ struct ChatService {
 
             return
         }
+
+        var recentMessages: [String: Conversation] = [:]
 
         let query = Constants.FirebaseFirestore.MessagesCollection.document(
             currentUserId
@@ -111,11 +113,31 @@ struct ChatService {
                 return
             }
 
-            let messages = snapshot.documents.compactMap { document in
-                return try? document.data(as: Message.self)
-            }
+            snapshot.documents.forEach { document in
+                do {
+                    let message = try document.data(as: Message.self)
 
-            completion(.success(messages))
+                    UserService.fetchUser(withId: message.fromId) { result in
+                        switch result {
+                        case .success(let user):
+                            let conversation = Conversation(
+                                user: user,
+                                message: message
+                            )
+
+                            recentMessages[user.uid] = conversation
+
+                            completion(.success(Array(recentMessages.values)))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                } catch {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+                }
+            }
         }
     }
 

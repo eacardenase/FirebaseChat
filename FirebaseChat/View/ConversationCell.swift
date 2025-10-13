@@ -11,7 +11,7 @@ class ConversationCell: UITableViewCell {
 
     // MARK: - Properties
 
-    var conversation: Message? {
+    var conversation: Conversation? {
         didSet {
             configure()
         }

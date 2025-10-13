@@ -11,7 +11,7 @@ class ConversationsController: UIViewController {
 
     // MARK: - Properties
 
-    private var recentMessages = [Message]()
+    private var recentMessages = [Conversation]()
 
     private lazy var tableView: UITableView = {
         let _tableView = UITableView()
@@ -225,7 +225,7 @@ extension ConversationsController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        guard let user = recentMessages[indexPath.row].user else { return }
+        let user = recentMessages[indexPath.row].user
 
         showChatController(for: user)
     }
@@ -255,7 +255,8 @@ extension ConversationsController {
             switch result {
             case .success(let recentMessages):
                 self.recentMessages = recentMessages.sorted(by: {
-                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                    $0.message.timestamp.dateValue()
+                        > $1.message.timestamp.dateValue()
                 })
 
                 self.tableView.reloadData()
