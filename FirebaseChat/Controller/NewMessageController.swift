@@ -209,7 +209,11 @@ extension NewMessageController {
         _ tableView: UITableView,
         willSelectRowAt indexPath: IndexPath
     ) -> IndexPath? {
-        return !filteredUsers.isEmpty ? indexPath : nil
+        if inSearchMode {
+            return !filteredUsers.isEmpty ? indexPath : nil
+        }
+
+        return indexPath
     }
 
     override func tableView(
