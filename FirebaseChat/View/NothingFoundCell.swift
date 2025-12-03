@@ -11,11 +11,16 @@ class NothingFoundCell: UITableViewCell {
 
     // MARK: - Properties
 
+    var title: String? {
+        didSet {
+            label.text = title
+        }
+    }
+
     private var label: UILabel = {
         let _label = UILabel()
 
         _label.translatesAutoresizingMaskIntoConstraints = false
-        _label.text = "Nothing Found"
         _label.font = .preferredFont(forTextStyle: .body)
         _label.textColor = .lightGray
         _label.textAlignment = .center

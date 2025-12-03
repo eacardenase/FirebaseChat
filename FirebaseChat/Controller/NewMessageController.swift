@@ -174,10 +174,21 @@ extension NewMessageController {
         }
 
         if inSearchMode && filteredUsers.isEmpty {
-            return tableView.dequeueReusableCell(
-                withIdentifier: NSStringFromClass(NothingFoundCell.self),
-                for: indexPath
-            )
+            guard
+                let nothingFoundCell =
+                    tableView.dequeueReusableCell(
+                        withIdentifier: NSStringFromClass(
+                            NothingFoundCell.self
+                        ),
+                        for: indexPath
+                    ) as? NothingFoundCell
+            else {
+                fatalError("Could not instantiate NothingFoundCell")
+            }
+
+            nothingFoundCell.title = "Nothing Found"
+
+            return nothingFoundCell
         }
 
         cell.user =
