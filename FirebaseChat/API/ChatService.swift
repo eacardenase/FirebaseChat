@@ -111,6 +111,12 @@ struct ChatService {
                 return
             }
 
+            if snapshot.documents.isEmpty {
+                completion(.success([]))
+
+                return
+            }
+
             snapshot.documents.forEach { document in
                 do {
                     let message = try document.data(as: Message.self)

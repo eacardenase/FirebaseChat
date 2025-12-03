@@ -23,6 +23,10 @@ class ConversationsController: UIViewController {
             ConversationCell.self,
             forCellReuseIdentifier: NSStringFromClass(ConversationCell.self)
         )
+        _tableView.register(
+            NothingFoundCell.self,
+            forCellReuseIdentifier: NSStringFromClass(NothingFoundCell.self)
+        )
 
         return _tableView
     }()
@@ -193,12 +197,31 @@ extension ConversationsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int)
         -> Int
     {
-        return recentMessages.count
+        return !recentMessages.isEmpty ? recentMessages.count : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
         -> UITableViewCell
     {
+
+        if recentMessages.isEmpty {
+            guard
+                let nothingFoundCell =
+                    tableView.dequeueReusableCell(
+                        withIdentifier: NSStringFromClass(
+                            NothingFoundCell.self
+                        ),
+                        for: indexPath
+                    ) as? NothingFoundCell
+            else {
+                fatalError("Could not instantiate NothingFoundCell")
+            }
+
+            nothingFoundCell.title = "There are no conversations."
+
+            return nothingFoundCell
+        }
+
         guard
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: NSStringFromClass(ConversationCell.self),
@@ -219,6 +242,13 @@ extension ConversationsController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ConversationsController: UITableViewDelegate {
+
+    func tableView(
+        _ tableView: UITableView,
+        willSelectRowAt indexPath: IndexPath
+    ) -> IndexPath? {
+        return !recentMessages.isEmpty ? indexPath : nil
+    }
 
     func tableView(
         _ tableView: UITableView,
