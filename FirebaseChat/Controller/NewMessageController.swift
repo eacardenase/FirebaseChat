@@ -196,6 +196,13 @@ extension NewMessageController {
 
     override func tableView(
         _ tableView: UITableView,
+        willSelectRowAt indexPath: IndexPath
+    ) -> IndexPath? {
+        return !filteredUsers.isEmpty ? indexPath : nil
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
         let user =
