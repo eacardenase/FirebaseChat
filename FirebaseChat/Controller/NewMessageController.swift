@@ -71,6 +71,10 @@ class NewMessageController: UITableViewController {
             UserSkeletonCell.self,
             forCellReuseIdentifier: NSStringFromClass(UserSkeletonCell.self)
         )
+        tableView.register(
+            NothingFoundCell.self,
+            forCellReuseIdentifier: NSStringFromClass(NothingFoundCell.self)
+        )
     }
 
 }
@@ -140,7 +144,11 @@ extension NewMessageController {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return inSearchMode ? filteredUsers.count : users.count
+        if inSearchMode {
+            return filteredUsers.isEmpty ? 1 : filteredUsers.count
+        }
+
+        return users.count
     }
 
     override func tableView(
@@ -165,8 +173,16 @@ extension NewMessageController {
             fatalError("Could not instantiate UserCell")
         }
 
+        if inSearchMode && filteredUsers.isEmpty {
+            return tableView.dequeueReusableCell(
+                withIdentifier: NSStringFromClass(NothingFoundCell.self),
+                for: indexPath
+            )
+        }
+
         cell.user =
             inSearchMode ? filteredUsers[indexPath.row] : users[indexPath.row]
+
         cell.selectionStyle = .none
 
         return cell
